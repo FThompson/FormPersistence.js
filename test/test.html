@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Form Persistence Test</title>
+        <script src='../form-persistence.js' type='text/javascript'></script>
+        <script type='text/javascript'>
+            window.addEventListener('load', () => {
+                let form = document.getElementById('test-form')
+                FormPersistence.persist(form)
+                FormPersistence.load(form)
+            })
+        </script>
+        <style>
+            fieldset {
+                border: none;
+            }
+        </style>
+    </head>
+    <body>
+        <form id='test-form'>
+            <input type='hidden' name='arr' value='arr1'>
+            <input type='hidden' name='arr' value='arr2'>
+            <input type='hidden' name='arr' value='arr3'>
+            <fieldset>
+                <label>
+                    Text <input type='text' name='text'>
+                </label>
+            </fieldset>
+            <fieldset>
+                <label>
+                    <input type='checkbox' name='checkbox1' value='bool1' checked='checked'> Checkbox 1
+                </label>
+                <label>
+                    <input type='checkbox' name='checkbox2' value='bool2'> Checkbox 2
+                </label>
+            </fieldset>
+            <fieldset>
+                <label>
+                    <input type='radio' name='radio' value='Option 1' checked='checked'> Option 1
+                </label>
+                <label>
+                    <input type='radio' name='radio' value='Option 2'> Option 2
+                </label>
+                <label>
+                    <input type='radio' name='radio' value='Option 3'> Option 3
+                </label>
+            </fieldset>
+            <fieldset>
+                <input type='submit' value='Submit'>
+            </fieldset>
+        </form>
+    </body>
+</html>
