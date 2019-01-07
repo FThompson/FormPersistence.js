@@ -44,26 +44,14 @@ Uses modern JavaScript features (up to ECMAScript 2016) like the `of` operator. 
 
 ### Known issues / Limitations ###
 
-May not support some element types.
-
-Verified to support the following types:
-* `<input>`
-    * `text`
-    * `checkbox`
-    * `radio`
-    * `hidden`
-    * `submit`
-    * `color`
-    * `date`
-    * `datetime-local`
-    * `email`
+Verified to support the following content:
+* All `<input>` types
     * `file` is ignored. Browsers do not allow file input values to be set for security reasons.
-    * `month`
-    * `number`
-    * `password` is ignored.
+    * `password` is ignored to avoid saving passwords in local storage.
+    * `submit` is ignored. Their values should not need to be set upon load.
+    * `button`, `reset`, and `image` types are ignored. Their values are not form data.
 * `<textarea>`
 * `<select>` and `<select multiple>`
+* `<button>` elements are ignored. Their values should not need to be set upon load.
 * Array form inputs.
 * External form elements via `form='form-id'`.
-
-`<button type='submit'>` elements are ignored. Submit button values are typically static and should not need to be set upon load.
