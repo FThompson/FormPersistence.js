@@ -5,22 +5,22 @@ A simple API for preserving form values across multiple sessons.
 ## Usage ##
 
 ```javascript
-FormPersistence.persist(form)
+FormPersistence.persist(form[, useSessionStorage])
 ```
 
-Register a form for persistence. Values are saved to local storage upon form submission.
+Register a form for persistence. Values are saved to local (default) or session storage upon form submission.
 
 ```javascript
-FormPersistence.save(form)
+FormPersistence.save(form[, useSessionStorage])
 ```
 
-Save a form to local storage. Useful for saving forms at regular intervals to avoid losing progress, for example.
+Save a form to local (default) or session storage. Useful for saving forms at regular intervals to avoid losing progress, for example.
 
 ```javascript
-FormPersistence.load(form[, valueFunctions])
+FormPersistence.load(form[, useSessionStorage[, valueFunctions]])
 ```
 
-Load a form from local storage. Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied, in the order provided, instead of the basic value insertion. Useful if your form has complicated element structures that require special handling.
+Load a form from local (default) or session storage. Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied, in the order provided, instead of the basic value insertion. Useful if your form has complicated element structures that require special handling.
 
 ### Example ###
 

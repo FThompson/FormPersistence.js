@@ -8,20 +8,22 @@
  */
 let FormPersistence = (() => {
     /**
-     * Registers the given form for persistence and saves its data to local storage upon submission.
+     * Registers the given form for persistence and saves its data to local or session storage upon submission.
      * 
-     * @param {HTMLFormElement} form The form to make persistent.
+     * @param {HTMLFormElement} form              The form to make persistent.
+     * @param {Boolean}         useSessionStorage Uses session storage if true, local storage if false/missing.
      */
-    function persist(form) {
-        form.addEventListener('submit', () => save(form))
+    function persist(form, useSessionStorage) {
+        form.addEventListener('submit', () => save(form, useSessionStorage))
     }
 
     /**
-     * Saves the given form to local storage.
+     * Saves the given form to local or session storage.
      * 
-     * @param {HTMLFormElement} form The form to serialize to local storage.
+     * @param {HTMLFormElement} form              The form to serialize to local storage.
+     * @param {Boolean}         useSessionStorage Uses session storage if true, local storage if false/missing.
      */
-    function save(form) {
+    function save(form, useSessionStorage) {
         let data = {}
         let formData = new FormData(form)
         let passwordNames = getPasswordInputNames(form)
@@ -33,7 +35,8 @@ let FormPersistence = (() => {
                 }
             }
         }
-        localStorage.setItem(getStorageKey(form), JSON.stringify(data))
+        let storage = useSessionStorage ? sessionStorage : localStorage
+        storage.setItem(getStorageKey(form), JSON.stringify(data))
     }
 
     /**
@@ -48,14 +51,16 @@ let FormPersistence = (() => {
     }
 
     /**
-     * Loads a given form from local storage, optionally with given special value handling functions.
+     * Loads a given form from local or session storage, optionally with given special value handling functions.
      * Does nothing if no saved values are found.
      * 
-     * @param {HTMLFormElement} form           The form to load saved values into.
-     * @param {Object}          valueFunctions The special value functions, like `name: fn(form, value)`.
+     * @param {HTMLFormElement} form              The form to load saved values into.
+     * @param {Boolean}         useSessionStorage Uses session storage if true, local storage if false/missing.
+     * @param {Object}          valueFunctions    The special value functions, like `name: fn(form, value)`.
      */
-    function load(form, valueFunctions) {
-        let json = localStorage.getItem(getStorageKey(form))
+    function load(form, useSessionStorage, valueFunctions) {
+        let storage = useSessionStorage ? sessionStorage : localStorage
+        let json = storage.getItem(getStorageKey(form))
         if (json) {
             let data = JSON.parse(json)
             // apply given value functions first
