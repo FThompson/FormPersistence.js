@@ -84,6 +84,17 @@ let FormPersistence = (() => {
     }
 
     /**
+     * Clears a given form's data from local or session storage.
+     * 
+     * @param {HTMLFormElement} form              The form to clear stored data for.
+     * @param {Boolean}         useSessionStorage Uses session storage if true, local storage if false/missing.
+     */
+    function clearStorage(form, useSessionStorage) {
+        let storage = useSessionStorage ? sessionStorage : localStorage
+        storage.removeItem(getStorageKey(form))
+    }
+
+    /**
      * Selects the given form's data elements in the document with a given name.
      * 
      * @param {String} formID The id of the form.
@@ -202,6 +213,7 @@ let FormPersistence = (() => {
     return {
         persist: persist,
         load: load,
-        save: save
+        save: save,
+        clearStorage: clearStorage
     }
 })()
