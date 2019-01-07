@@ -27,7 +27,7 @@ let FormPersistence = (() => {
         for (let key of formData.keys()) {
             let values = formData.getAll(key)
             for (let value of values) {
-                if (typeof value !== 'object') {
+                if (value.constructor.name !== 'File') {
                     if (!(key in data)) {
                         data[key] = []
                     }
