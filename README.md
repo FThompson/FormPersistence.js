@@ -44,13 +44,13 @@ Uses modern JavaScript features (up to ECMAScript 2016) like the `of` operator. 
 
 ### Known issues / Limitations ###
 
-May not support some `<input>` element types.
+May not support some element types. Does not support elements outside of the form with a `form='id'` attribute.
 
 Thus far, tested only on the following types:
-* `text`
-* `checkbox`
-* `radio`
-* `hidden`
-* `submit`
-
-Does not currently support `<textarea>` elements.
+* `<input>`
+    * `text`
+    * `checkbox`
+    * `radio`
+    * `hidden`
+    * `submit`
+* `<textarea>`

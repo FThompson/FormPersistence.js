@@ -50,16 +50,21 @@ let FormPersistence = (() => {
             let checkedboxes = []
             for (let name in data) {
                 if (!speciallyHandled.includes(name)) {
-                    let inputs = form.querySelectorAll('input[name="' + name + '"]')
+                    let inputs = form.querySelectorAll('input[name="' + name + '"],textarea[name="' + name + '"]')
                     inputs.forEach((input, i) => {
-                        let type = input.type
-                        if (type === 'radio') {
-                            applyCheckedValue(input, data[name][0])
-                        } else if (type === 'checkbox') {
-                            applyCheckedValue(input, data[name][i])
-                            checkedboxes.push(input)
-                        } else {
-                            input.value = data[name][i]
+                        let tag = input.tagName
+                        if (tag === 'INPUT') {
+                            let type = input.type
+                            if (type === 'radio') {
+                                applyCheckedValue(input, data[name][0])
+                            } else if (type === 'checkbox') {
+                                applyCheckedValue(input, data[name][i])
+                                checkedboxes.push(input)
+                            } else {
+                                input.value = data[name][i]
+                            }
+                        } else if (tag === 'TEXTAREA') {
+                            input.innerHTML = data[name][i]
                         }
                     })
                 }
