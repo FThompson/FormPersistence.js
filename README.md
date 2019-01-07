@@ -22,6 +22,12 @@ FormPersistence.load(form[, useSessionStorage[, valueFunctions]])
 
 Load a form from local (default) or session storage. Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied, in the order provided, instead of the basic value insertion. Useful if your form has complicated element structures that require special handling.
 
+```javascript
+FormPersistence.clearStorage(form[, useSessionStorage])
+```
+
+Clear a form's data from local (default) or session storage.
+
 ### Example ###
 
 ```html
