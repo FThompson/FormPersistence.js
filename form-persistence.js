@@ -24,18 +24,27 @@ let FormPersistence = (() => {
     function save(form) {
         let data = {}
         let formData = new FormData(form)
+        let passwordNames = getPasswordInputNames(form)
         for (let key of formData.keys()) {
-            let values = formData.getAll(key)
-            for (let value of values) {
-                if (value.constructor.name !== 'File') {
-                    if (!(key in data)) {
-                        data[key] = []
-                    }
-                    data[key].push(value)
+            if (!passwordNames.includes(key)) {
+                let values = formData.getAll(key).filter(v => v.constructor.name !== 'File')
+                if (values.length > 0) {
+                    data[key] = values
                 }
             }
         }
         localStorage.setItem(getStorageKey(form), JSON.stringify(data))
+    }
+
+    /**
+     * Gets all password input elements' names for the given form. Used to filter out password inputs.
+     * 
+     * @param {HTMLFormElement} form The form to get password element names of.
+     */
+    function getPasswordInputNames(form) {
+        let selector = `form#${form.id} input[type="password"],input[type="password"][form="${form.id}"]`
+        let inputs = document.querySelectorAll(selector)
+        return Array.from(inputs).map(e => e.name)
     }
 
     /**

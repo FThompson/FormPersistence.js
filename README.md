@@ -58,9 +58,12 @@ Verified to support the following types:
     * `datetime-local`
     * `email`
     * `file` is ignored. Browsers do not allow file input values to be set for security reasons.
+    * `month`
+    * `number`
+    * `password` is ignored.
 * `<textarea>`
 * `<select>` and `<select multiple>`
 * Array form inputs.
 * External form elements via `form='form-id'`.
 
-`<button type='submit'>` elements are ignored. Submit button values are typically static.
+`<button type='submit'>` elements are ignored. Submit button values are typically static and should not need to be set upon load.
