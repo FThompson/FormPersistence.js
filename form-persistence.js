@@ -47,6 +47,7 @@ let FormPersistence = (() => {
                 speciallyHandled = applySpecialHandlers(data, form, valueFunctions)
             }
             // fill remaining values normally
+            let checkedboxes = []
             for (let name in data) {
                 if (!speciallyHandled.includes(name)) {
                     // TODO cleanup
@@ -63,14 +64,10 @@ let FormPersistence = (() => {
                         if (tag === 'INPUT') {
                             let type = input.type
                             if (type === 'radio') {
-                                if (input.value === data[name][0] && !input.checked) {
-                                    input.click()
-                                }
+                                applyCheckedValue(input, data[name][0])
                             } else if (type === 'checkbox') {
-                                let shouldBeChecked = input.value === data[name][i]
-                                if (shouldBeChecked !== input.checked) {
-                                    input.click()
-                                }
+                                applyCheckedValue(input, data[name][i])
+                                checkedboxes.push(input)
                             } else {
                                 input.value = data[name][i]
                             }
@@ -88,6 +85,8 @@ let FormPersistence = (() => {
                     })
                 }
             }
+            // unchecked boxes are not included in form data, handle them separately
+            uncheckBoxes(form, checkedboxes)
         }
     }
 
@@ -111,6 +110,34 @@ let FormPersistence = (() => {
             }
         }
         return speciallyHandled
+    }
+
+    /**
+     * Clicks the given input element if it matches the given value and is not already checked.
+     * 
+     * @param {HTMLInputElement} inputElement The radio or checkbox input element to click if applicable.
+     * @param {String}           value        The value to check against.
+     */
+    function applyCheckedValue(inputElement, value) {
+        if (inputElement.value === value && !inputElement.checked) {
+            inputElement.click()
+        }
+    }
+
+    /**
+     * Unchecks all checkboxes in the given form unless they exist in the given array.
+     * This check is necessary because unchecked boxes are not included in form data.
+     * 
+     * @param {HTMLFormElement} form             The form to clear checked boxes from.
+     * @param {Array}           checkboxesToSkip The list of checkboxes to skip because they have already been checked.
+     */
+    function uncheckBoxes(form, checkboxesToSkip) {
+        let checkboxes = form.querySelectorAll('input[type="checkbox"]')
+        for (let checkbox of checkboxes) {
+            if (!checkboxesToSkip.includes(checkbox) && checkbox.checked) {
+                checkbox.click()
+            }
+        }
     }
 
     /**
