@@ -50,7 +50,13 @@ let FormPersistence = (() => {
             let checkedboxes = []
             for (let name in data) {
                 if (!speciallyHandled.includes(name)) {
-                    let inputs = form.querySelectorAll('input[name="' + name + '"],textarea[name="' + name + '"]')
+                    // TODO cleanup
+                    let inputs = document.querySelectorAll(
+                        'form#' + form.id + ' input[name="' + name + '"],' +
+                        'form#' + form.id + ' textarea[name="' + name + '"],' +
+                        'input[name="' + name + '"][form="' + form.id + '"],' +
+                        'textarea[name="' + name + '"][form="' + form.id + '"]'
+                    )
                     inputs.forEach((input, i) => {
                         let tag = input.tagName
                         if (tag === 'INPUT') {

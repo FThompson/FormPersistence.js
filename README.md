@@ -44,9 +44,9 @@ Uses modern JavaScript features (up to ECMAScript 2016) like the `of` operator. 
 
 ### Known issues / Limitations ###
 
-May not support some element types. Does not support elements outside of the form with a `form='id'` attribute.
+May not support some element types.
 
-Thus far, tested only on the following types:
+Verified to support the following types:
 * `<input>`
     * `text`
     * `checkbox`
@@ -54,3 +54,4 @@ Thus far, tested only on the following types:
     * `hidden`
     * `submit`
 * `<textarea>`
+* External form elements (via `form='form-id'`) of the above types.
