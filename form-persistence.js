@@ -47,46 +47,71 @@ let FormPersistence = (() => {
                 speciallyHandled = applySpecialHandlers(data, form, valueFunctions)
             }
             // fill remaining values normally
-            let checkedboxes = []
+            let checkedBoxes = []
             for (let name in data) {
                 if (!speciallyHandled.includes(name)) {
-                    // TODO cleanup
-                    let inputs = document.querySelectorAll(
-                        'form#' + form.id + ' input[name="' + name + '"],' +
-                        'form#' + form.id + ' textarea[name="' + name + '"],' +
-                        'form#' + form.id + ' select[name="' + name + '"],' +
-                        'input[name="' + name + '"][form="' + form.id + '"],' +
-                        'textarea[name="' + name + '"][form="' + form.id + '"],' +
-                        'select[name="' + name + '"][form="' + form.id + '"]'
-                    )
+                    let inputs = getDataElements(form.id, name)
                     inputs.forEach((input, i) => {
-                        let tag = input.tagName
-                        if (tag === 'INPUT') {
-                            let type = input.type
-                            if (type === 'radio') {
-                                applyCheckedValue(input, data[name][0])
-                            } else if (type === 'checkbox') {
-                                applyCheckedValue(input, data[name][i])
-                                checkedboxes.push(input)
-                            } else {
-                                input.value = data[name][i]
-                            }
-                        } else if (tag === 'TEXTAREA') {
-                            input.value = data[name][i]
-                        } else if (tag === 'SELECT') {
-                            if (input.multiple) {
-                                for (let option of input.options) {
-                                    option.selected = data[name].includes(option.value)
-                                }
-                            } else {
-                                input.value = data[name][i]
-                            }
-                        }
+                        applyValues(input, data[name], i, checkedBoxes)
                     })
                 }
             }
             // unchecked boxes are not included in form data, handle them separately
-            uncheckBoxes(form, checkedboxes)
+            uncheckBoxes(form, checkedBoxes)
+        }
+    }
+
+    /**
+     * Selects the given form's data elements in the document with a given name.
+     * 
+     * @param {String} formID The id of the form.
+     * @param {String} name   The name of the input-like tag to select for.
+     */
+    function getDataElements(formID, name) {
+        let buildInternalSelector = (tag) => `form#${formID} ${tag}[name="${name}"]`
+        let buildExternalSelector = (tag) => `${tag}[name="${name}"][form="${formID}"]`
+        let selectors = [
+            buildInternalSelector('input'),
+            buildInternalSelector('textarea'),
+            buildInternalSelector('select'),
+            buildExternalSelector('input'),
+            buildExternalSelector('textarea'),
+            buildExternalSelector('select')
+        ]
+        return document.querySelectorAll(selectors.join())
+    }
+
+    /**
+     * Applies the given values to the given element.
+     * Adds any checkbox elements checked to the given array.
+     * 
+     * @param {HTMLElement} element The element to apply values to.
+     * @param {Array} values        The array of values. Some element types use the first element instead of the index.
+     * @param {Number} index        The index of the value array to apply if applicable.
+     * @param {Array} checkedBoxes  The array of checkboxes to add any clicked checkboxes to.
+     */
+    function applyValues(element, values, index, checkedBoxes) {
+        let tag = element.tagName
+        if (tag === 'INPUT') {
+            let type = element.type
+            if (type === 'radio') {
+                applyCheckedValue(element, values[0])
+            } else if (type === 'checkbox') {
+                applyCheckedValue(element, values[index])
+                checkedBoxes.push(element)
+            } else {
+                element.value = values[index]
+            }
+        } else if (tag === 'TEXTAREA') {
+            element.value = values[index]
+        } else if (tag === 'SELECT') {
+            if (element.multiple) {
+                for (let option of element.options) {
+                    option.selected = values.includes(option.value)
+                }
+            } else {
+                element.value = values[index]
+            }
         }
     }
 
