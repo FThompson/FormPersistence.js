@@ -42,8 +42,6 @@ Load a form from local storage. Optionally pass a dictionary of special form val
 
 Uses modern JavaScript features (up to ECMAScript 2016) like the `of` operator. Use a compiler like [Babel](https://github.com/babel/babel) if you need to support IE/legacy users.
 
-### Known issues / Limitations ###
-
 Verified to support the following content:
 * All `<input>` types
     * `file` is ignored. Browsers do not allow file input values to be set for security reasons.
