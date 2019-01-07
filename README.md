@@ -53,9 +53,14 @@ Verified to support the following types:
     * `radio`
     * `hidden`
     * `submit`
+    * `color`
+    * `date`
+    * `datetime-local`
+    * `email`
+    * `file` is ignored. Browsers do not allow file input values to be set for security reasons.
 * `<textarea>`
 * `<select>` and `<select multiple>`
 * Array form inputs.
 * External form elements via `form='form-id'`.
 
-`<button type='submit'>` elements are ignored.
+`<button type='submit'>` elements are ignored. Submit button values are typically static.

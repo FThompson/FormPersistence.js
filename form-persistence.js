@@ -25,7 +25,15 @@ let FormPersistence = (() => {
         let data = {}
         let formData = new FormData(form)
         for (let key of formData.keys()) {
-            data[key] = formData.getAll(key)
+            let values = formData.getAll(key)
+            for (let value of values) {
+                if (typeof value !== 'object') {
+                    if (!(key in data)) {
+                        data[key] = []
+                    }
+                    data[key].push(value)
+                }
+            }
         }
         localStorage.setItem(getStorageKey(form), JSON.stringify(data))
     }
