@@ -49,14 +49,47 @@
                 <textarea name='textarea'>Inner text area.</textarea>
             </fieldset>
             <fieldset>
+                <select name='select' form='test-form'>
+                    <option value='a'>A</option>
+                    <option value='b'>B</option>
+                    <option value='c'>C</option>
+                    <option value='d'>D</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <select name='select-m' form='test-form' multiple='multiple'>
+                    <option value='a-m'>A</option>
+                    <option value='b-m'>B</option>
+                    <option value='c-m'>C</option>
+                    <option value='d-m'>D</option>
+                </select>
+            </fieldset>
+            <fieldset>
                 <input type='submit' value='Submit'>
             </fieldset>
         </form>
+        <hr>
         <fieldset>
             External text <input type='text' name='ext-text' form='test-form'>
         </fieldset>
         <fieldset>
             <textarea name='ext-textarea' form='test-form'>External text area.</textarea>
+        </fieldset>
+        <fieldset>
+            <select name='ext-select' form='test-form'>
+                <option value='ext-a'>A</option>
+                <option value='ext-b'>B</option>
+                <option value='ext-c'>C</option>
+                <option value='ext-d'>D</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <select name='ext-select-m' form='test-form' multiple='multiple'>
+                <option value='ext-a-m'>A</option>
+                <option value='ext-b-m'>B</option>
+                <option value='ext-c-m'>C</option>
+                <option value='ext-d-m'>D</option>
+            </select>
         </fieldset>
     </body>
 </html>

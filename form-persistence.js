@@ -54,8 +54,10 @@ let FormPersistence = (() => {
                     let inputs = document.querySelectorAll(
                         'form#' + form.id + ' input[name="' + name + '"],' +
                         'form#' + form.id + ' textarea[name="' + name + '"],' +
+                        'form#' + form.id + ' select[name="' + name + '"],' +
                         'input[name="' + name + '"][form="' + form.id + '"],' +
-                        'textarea[name="' + name + '"][form="' + form.id + '"]'
+                        'textarea[name="' + name + '"][form="' + form.id + '"],' +
+                        'select[name="' + name + '"][form="' + form.id + '"]'
                     )
                     inputs.forEach((input, i) => {
                         let tag = input.tagName
@@ -71,6 +73,14 @@ let FormPersistence = (() => {
                             }
                         } else if (tag === 'TEXTAREA') {
                             input.innerHTML = data[name][i]
+                        } else if (tag === 'SELECT') {
+                            if (input.multiple) {
+                                for (let option of input.options) {
+                                    option.selected = data[name].includes(option.value)
+                                }
+                            } else {
+                                input.value = data[name][i]
+                            }
                         }
                     })
                 }
