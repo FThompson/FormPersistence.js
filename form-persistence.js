@@ -128,10 +128,16 @@ let FormPersistence = (() => {
         if (tag === 'INPUT') {
             let type = element.type
             if (type === 'radio') {
-                applyCheckedValue(element, values[0])
+                if (element.value === values[0] && !element.checked) {
+                    element.click()
+                }
             } else if (type === 'checkbox') {
-                applyCheckedValue(element, values[index])
-                checkedBoxes.push(element)
+                if (values.includes(element.value)) {
+                    if (!element.checked) {
+                        element.click()
+                    }
+                    checkedBoxes.push(element)
+                }
             } else {
                 element.value = values[index]
             }
@@ -168,18 +174,6 @@ let FormPersistence = (() => {
             }
         }
         return speciallyHandled
-    }
-
-    /**
-     * Clicks the given input element if it matches the given value and is not already checked.
-     * 
-     * @param {HTMLInputElement} inputElement The radio or checkbox input element to click if applicable.
-     * @param {String}           value        The value to check against.
-     */
-    function applyCheckedValue(inputElement, value) {
-        if (inputElement.value === value && !inputElement.checked) {
-            inputElement.click()
-        }
     }
 
     /**
