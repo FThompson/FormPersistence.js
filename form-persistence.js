@@ -5,6 +5,7 @@
  * * Load a saved form (e.g. at window load time) with `FormPersistence#load(form, valueFunctions)`.
  * 
  * Uses module pattern per https://yuiblog.com/blog/2007/06/12/module-pattern/.
+ * See https://github.com/FThompson/FormPersistence.js
  */
 let FormPersistence = (() => {
     /**
