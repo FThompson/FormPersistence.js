@@ -7,7 +7,7 @@
  * Uses module pattern per https://yuiblog.com/blog/2007/06/12/module-pattern/.
  * See https://github.com/FThompson/FormPersistence.js
  */
-let FormPersistence = (() => {
+const FormPersistence = (() => {
     /**
      * Registers the given form for persistence and saves its data to local or session storage upon submission.
      * 
