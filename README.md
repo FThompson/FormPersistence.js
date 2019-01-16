@@ -1,6 +1,23 @@
 # HTML Form Persistence #
+[![](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
 A simple API for preserving form values across multiple sessons.
+
+Kindly hosted by jsDelivr: https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.0/form-persistence.js
+
+```html
+<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.0/form-persistence.js' type='text/javascript'></script>
+```
+
+### Example ###
+
+```javascript
+window.addEventListener('load', () => {
+    let form = document.getElementById('test-form')
+    FormPersistence.persist(form)
+    FormPersistence.load(form)
+})
+```
 
 ## Usage ##
 
@@ -27,20 +44,6 @@ FormPersistence.clearStorage(form[, useSessionStorage])
 ```
 
 Clear a form's data from local (default) or session storage.
-
-### Example ###
-
-```html
-<script src='form-persistence.js' type='text/javascript'></script>
-<script type='text/javascript'>
-    window.addEventListener('load', () => {
-        let form = document.getElementById('test-form')
-        FormPersistence.persist(form)
-        FormPersistence.load(form)
-    })
-</script>
-```
-
 
 ---
 
