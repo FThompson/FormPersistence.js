@@ -19,7 +19,7 @@ window.addEventListener('load', () => {
 })
 ```
 
-See a complete working example [here](https://jsfiddle.net/fthompson/xa62drsh/).
+See a complete working example [here](https://jsfiddle.net/fthompson/xa62drsh/). Change form values, press submit, and then refresh the page to observe persistence.
 
 ## Usage ##
 
