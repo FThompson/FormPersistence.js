@@ -19,6 +19,8 @@ window.addEventListener('load', () => {
 })
 ```
 
+See a complete working example [here](https://jsfiddle.net/fthompson/xa62drsh/).
+
 ## Usage ##
 
 ```javascript
