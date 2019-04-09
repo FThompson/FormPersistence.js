@@ -3,11 +3,10 @@
     <head>
         <title>Form Persistence Test</title>
         <script src='../form-persistence.js' type='text/javascript'></script>
-        <script type='text/javascript'>
+        <script type='text/javascript' defer>
             window.addEventListener('load', () => {
                 let form = document.getElementById('test-form')
                 FormPersistence.persist(form)
-                FormPersistence.load(form)
             })
         </script>
         <style>

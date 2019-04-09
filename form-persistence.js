@@ -9,22 +9,33 @@
  */
 const FormPersistence = (() => {
     /**
-     * Registers the given form for persistence and saves its data to local or session storage upon submission.
+     * Registers the given form for persistence by saving its data to local or session storage.
+     * Form data will be saved upon page refresh and optionally upon form submission.
+     * Saved form data will be loaded upon calling this function, typically on page load.
      * 
      * @param {HTMLFormElement} form              The form to make persistent.
-     * @param {Boolean}         useSessionStorage Uses session storage if true, local storage if false/missing.
+     * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
+     * @param {Boolean}         saveOnSubmit      Save the form data upon submit if `true`, otherwise `false`. Default `false`.
      */
-    function persist(form, useSessionStorage) {
-        form.addEventListener('submit', () => save(form, useSessionStorage))
+    function persist(form, useSessionStorage = false, saveOnSubmit = false) {
+        load(form, useSessionStorage)
+        let saveForm = () => save(form, useSessionStorage)
+        window.addEventListener('beforeunload', saveForm)
+        if (!saveOnSubmit) {
+            form.addEventListener('submit', () => {
+                window.removeEventListener('beforeunload', saveForm)
+                clearStorage(form, useSessionStorage)
+            })
+        }
     }
 
     /**
      * Saves the given form to local or session storage.
      * 
      * @param {HTMLFormElement} form              The form to serialize to local storage.
-     * @param {Boolean}         useSessionStorage Uses session storage if true, local storage if false/missing.
+     * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
      */
-    function save(form, useSessionStorage) {
+    function save(form, useSessionStorage = false) {
         let data = {}
         let formData = new FormData(form)
         let passwordNames = getPasswordInputNames(form)
@@ -38,6 +49,7 @@ const FormPersistence = (() => {
         }
         let storage = useSessionStorage ? sessionStorage : localStorage
         storage.setItem(getStorageKey(form), JSON.stringify(data))
+        console.log('saved')
     }
 
     /**
@@ -56,10 +68,10 @@ const FormPersistence = (() => {
      * Does nothing if no saved values are found.
      * 
      * @param {HTMLFormElement} form              The form to load saved values into.
-     * @param {Boolean}         useSessionStorage Uses session storage if true, local storage if false/missing.
+     * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
      * @param {Object}          valueFunctions    The special value functions, like `name: fn(form, value)`.
      */
-    function load(form, useSessionStorage, valueFunctions) {
+    function load(form, useSessionStorage = false, valueFunctions) {
         let storage = useSessionStorage ? sessionStorage : localStorage
         let json = storage.getItem(getStorageKey(form))
         if (json) {
@@ -88,11 +100,15 @@ const FormPersistence = (() => {
      * Clears a given form's data from local or session storage.
      * 
      * @param {HTMLFormElement} form              The form to clear stored data for.
-     * @param {Boolean}         useSessionStorage Uses session storage if true, local storage if false/missing.
+     * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
      */
-    function clearStorage(form, useSessionStorage) {
+    function clearStorage(form, useSessionStorage = false) {
         let storage = useSessionStorage ? sessionStorage : localStorage
         storage.removeItem(getStorageKey(form))
+        console.log('cleared')
+        
+        let json = storage.getItem(getStorageKey(form))
+        console.log(json)
     }
 
     /**
