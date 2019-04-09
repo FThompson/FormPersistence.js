@@ -1,8 +1,9 @@
 /**
  * This module implements form persistence across sessions via local storage.
- * * Register a form for persistence with `FormPersistence#persist(form)`.
- * * Save a form to local storage with `FormPersistence#save(form)`.
- * * Load a saved form (e.g. at window load time) with `FormPersistence#load(form, valueFunctions)`.
+ * * Register a form for persistence with `FormPersistence#persist(form[, useSessionStorage[, saveOnSubmit]])`.
+ * * Save a form to local storage with `FormPersistence#save(form[, useSessionStorage])`.
+ * * Load a saved form (e.g. at window load time) with `FormPersistence#load(form[, useSessionStorage[, valueFunctions]])`.
+ * * Clear saved form data with `FormPersistence#clearStorage(form[, useSessionStorage])`.
  * 
  * Uses module pattern per https://yuiblog.com/blog/2007/06/12/module-pattern/.
  * See https://github.com/FThompson/FormPersistence.js
