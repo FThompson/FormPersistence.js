@@ -3,10 +3,10 @@
 
 A simple API for preserving form values across multiple sessons.
 
-Hosted by jsDelivr: https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.1/form-persistence.js
+Hosted by jsDelivr: https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.1/form-persistence.min.js
 
 ```html
-<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.1/form-persistence.js' type='text/javascript'></script>
+<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.1/form-persistence.min.js' type='text/javascript'></script>
 ```
 
 ### Example ###
