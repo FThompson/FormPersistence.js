@@ -18,8 +18,8 @@ const FormPersistence = (() => {
      * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
      * @param {Boolean}         saveOnSubmit      Save the form data upon submit if `true`, otherwise `false`. Default `false`.
      */
-    function persist(form, useSessionStorage = false, saveOnSubmit = false) {
-        load(form, useSessionStorage)
+    function persist(form, useSessionStorage = false, saveOnSubmit = false, valueFunctions) {
+        load(form, useSessionStorage, valueFunctions)
         let saveForm = () => save(form, useSessionStorage)
         window.addEventListener('beforeunload', saveForm)
         if (!saveOnSubmit) {

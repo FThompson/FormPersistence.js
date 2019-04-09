@@ -23,10 +23,12 @@ See a complete working example [here](https://jsfiddle.net/fthompson/xa62drsh/).
 ## Usage ##
 
 ```javascript
-FormPersistence.persist(form[, useSessionStorage[, saveOnSubmit]])
+FormPersistence.persist(form[, useSessionStorage[, saveOnSubmit[, valueFunctions]]])
 ```
 
 Register a form for persistence. Values are saved to local (default) or session storage upon page refresh and optionally upon form submission (default behavior is to clear storage upon submission). Calling this function loads saved data into the form.
+
+Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied, in the order provided, instead of the basic value insertion. Useful if your form has complicated element structures that require special handling.
 
 ```javascript
 FormPersistence.save(form[, useSessionStorage])
