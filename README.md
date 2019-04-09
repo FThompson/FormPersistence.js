@@ -78,4 +78,5 @@ Verified to support the following content:
 * Array form inputs.
 * External form elements via `form='form-id'`.
 
-Does not currently support Microsoft Edge versions before November 2018 or Internet Explorer.
+#### Browsers
+Supports all major browsers except Microsoft Edge versions before November 2018 or Internet Explorer.
