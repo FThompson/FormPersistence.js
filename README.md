@@ -27,7 +27,7 @@ See a complete working example [here](https://jsfiddle.net/fthompson/xa62drsh/).
 FormPersistence.persist(form[, useSessionStorage])
 ```
 
-Register a form for persistence. Values are saved to local (default) or session storage upon form submission.
+Register a form for persistence. Values are saved to local (default) or session storage **upon form submission**.
 
 ```javascript
 FormPersistence.save(form[, useSessionStorage])
