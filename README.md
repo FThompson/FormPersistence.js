@@ -77,3 +77,5 @@ Verified to support the following content:
 * `<button>` elements are ignored. Their values should not need to be set upon load.
 * Array form inputs.
 * External form elements via `form='form-id'`.
+
+Does not currently support Microsoft Edge versions before November 2018 or Internet Explorer.
