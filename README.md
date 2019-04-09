@@ -3,10 +3,10 @@
 
 A simple API for preserving form values across multiple sessons.
 
-Kindly hosted by jsDelivr: https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.0/form-persistence.js
+Hosted by jsDelivr: https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.1/form-persistence.js
 
 ```html
-<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.0/form-persistence.js' type='text/javascript'></script>
+<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.1/form-persistence.js' type='text/javascript'></script>
 ```
 
 ### Example ###
@@ -18,7 +18,7 @@ window.addEventListener('load', () => {
 })
 ```
 
-See a complete working example [here](https://jsfiddle.net/fthompson/xa62drsh/). Change form values, press submit, and then refresh the page to observe persistence.
+See a complete working example [here](https://jsfiddle.net/fthompson/xa62drsh/). Change form values and refresh the page to observe persistence.
 
 ## Usage ##
 
