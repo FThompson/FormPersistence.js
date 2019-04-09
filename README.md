@@ -48,6 +48,18 @@ FormPersistence.clearStorage(form[, useSessionStorage])
 
 Clear a form's data from local (default) or session storage.
 
+```javascript
+FormPersistence.serialize(form)
+```
+
+Serialize a form into an object, skipping password and file inputs.
+
+```javascript
+FormPersistence.deserialize(form, data[, valueFunctions])
+```
+
+Load a form by deserializing a data object. Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied, in the order provided, instead of the basic value insertion. Useful if your form has complicated element structures that require special handling.
+
 ---
 
 ### Compatibility ###
