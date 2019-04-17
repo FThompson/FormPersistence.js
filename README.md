@@ -22,13 +22,13 @@ Or [download the script](https://github.com/FThompson/FormPersistence.js/blob/ma
 The FormPersistence module's main function is `FormPersistence.persist`, which persists a form across refreshes or sessions.
 
 ```javascript
-window.addEventListener('load', () => {
-    let form = document.getElementById('test-form');
-    FormPersistence.persist(form);
-});
+let form = document.getElementById('test-form');
+FormPersistence.persist(form);
 ```
 
 Calling `FormPersistence.persist` loads saved form data into the form and sets up event handlers that take care of saving form data. By default, form data is saved to local storage and cleared upon form submission.
+
+Ensure that you call `persist` once the document has finished loading, using either an `onLoad` event handler or by adding `defer` to the script import.
 
 ### What if my form has complex elements that require custom data loading?
 
