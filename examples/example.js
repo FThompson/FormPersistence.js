@@ -4,6 +4,7 @@ FormPersistence.persist(form, false, false, valueFunctions={
 });
 
 document.getElementById('add-tag').addEventListener('click', addTag);
+document.getElementById('refresh').addEventListener('click', refreshPage);
 
 function addTag() {
     let tagsBox = document.getElementById('tag-input');
@@ -25,4 +26,8 @@ function createTag(tag) {
     tagValue.setAttribute('name', 'tag');
     tagValue.value = tag;
     tagElement.appendChild(tagValue);
+}
+
+function refreshPage() {
+    window.location.reload(true);
 }
