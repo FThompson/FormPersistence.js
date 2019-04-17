@@ -28,11 +28,11 @@ FormPersistence.persist(form);
 
 Calling `FormPersistence.persist` loads saved form data into the form and sets up event handlers that take care of saving form data. By default, form data is saved to local storage and cleared upon form submission.
 
-Ensure that you call `persist` once the document has finished loading, using either an `onLoad` event handler or by adding `defer` to the script import.
+Ensure that you call `persist` after the document has finished loading, either by using an `onLoad` event handler or by adding `defer` to the script import.
 
 ### What if my form has complex elements that require custom data loading?
 
-If your form has rich elements reflecting form data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed to `persist` through its fourth parameter, where the second and third parameters are `useSessionStorage` (default false) and `saveOnSubmit` (default false).
+If your form has rich elements reflecting form data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed to `persist` through its fourth parameter. The second and third parameters are `useSessionStorage` (default false) and `saveOnSubmit` (default false).
 
 The `valueFunctions` parameter is a dictionary object where the keys are form data names and the values are functions that handle loading in the values for those data names.
 
@@ -42,7 +42,9 @@ let formValueFunctions = {
 };
 ```
 
-For example, you might have a post submission form that takes a title, a post body, and a set of tags describing the post.
+#### Custom Value Functions Example
+
+Consider a post submission form that takes a title, a post body, and a set of tags describing the post.
 
 ```html
 <form id='create-post'>
@@ -91,7 +93,7 @@ function createTag(tag) {
 }
 ```
 
-If you tried to set up form persistence normally on this form, the tag data would not be loaded successfully because the script would be unable to find the tag inputs in the document. This scenario requires custom value functions.
+If you try to set up form persistence normally on this form, the tag elements would not be created because the script would simply be searching for inputs named `tag` in the document. This scenario requires custom value functions.
 
 ```javascript
 let valueFunctions = {
@@ -99,7 +101,7 @@ let valueFunctions = {
 };
 ```
 
-Pass the value functions to `FormPersistence.persist` and use the default values of `false` for both `useSessionStorage` and `saveOnSubmit` parameters.
+Pass the value functions to `FormPersistence.persist` and keep the default values of `false` for both `useSessionStorage` and `saveOnSubmit` parameters.
 
 ```javascript
 FormPersistence.persist(form, false, false, valueFunctions);
@@ -115,27 +117,27 @@ See the complete working example [here](https://jsfiddle.net/fthompson/jz25bfvd/
 FormPersistence.persist(form[, useSessionStorage[, saveOnSubmit[, valueFunctions]]])
 ```
 
-Register a form for persistence. Values are saved to local (default) or session storage upon page refresh and optionally upon form submission (default behavior is to clear storage upon submission). Calling this function loads saved data into the form.
+Register a form for persistence. Values are saved to local or session storage on page refresh and optionally on form submission. Default behavior is to use local storage and clear storage upon form submission. Calling this function loads saved data into the form.
 
-Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied, in the order provided, instead of the basic value insertion. Useful if your form has complicated element structures that require special handling.
+Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied (in the order provided) instead of basic value insertion. Useful if your form has complex data elements that require special handling.
 
 ```javascript
 FormPersistence.save(form[, useSessionStorage])
 ```
 
-Save a form to local (default) or session storage. Useful for saving forms at regular intervals to avoid losing progress, for example.
+Save a form to local or session storage (default local storage). Useful for saving forms at regular intervals to avoid losing progress, for example.
 
 ```javascript
 FormPersistence.load(form[, useSessionStorage[, valueFunctions]])
 ```
 
-Load a form from local (default) or session storage. Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)`.
+Load a form from local or session storage (default local storage). Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)`.
 
 ```javascript
 FormPersistence.clearStorage(form[, useSessionStorage])
 ```
 
-Clear a form's data from local (default) or session storage.
+Clear a form's data from local or session storage (default local storage).
 
 ```javascript
 FormPersistence.serialize(form)
