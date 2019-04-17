@@ -128,10 +128,7 @@ const FormPersistence = (() => {
     function clearStorage(form, useSessionStorage = false) {
         let storage = useSessionStorage ? sessionStorage : localStorage
         storage.removeItem(getStorageKey(form))
-        console.log('cleared')
-        
         let json = storage.getItem(getStorageKey(form))
-        console.log(json)
     }
 
     /**

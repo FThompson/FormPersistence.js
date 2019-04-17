@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Form Persistence Test</title>
+        <script src='../form-persistence.js' type='text/javascript'></script>
+        <script type='text/javascript' defer>
+            window.addEventListener('load', () => {
+                let form = document.getElementById('test-form')
+                FormPersistence.persist(form)
+            })
+        </script>
+        <style>
+            fieldset {
+                border: none;
+            }
+        </style>
+    </head>
+    <body>
+        <form id='test-form'>
+            <input type='hidden' name='arr' value='arr1'>
+            <input type='hidden' name='arr' value='arr2'>
+            <input type='hidden' name='arr' value='arr3'>
+            <fieldset>
+                <label>
+                    Text <input type='text' name='text'>
+                </label>
+            </fieldset>
+            <fieldset>
+                <label>
+                    <input type='checkbox' name='checkbox1' value='bool1' checked='checked'> Checkbox 1
+                </label>
+                <label>
+                    <input type='checkbox' name='checkbox2' value='bool2'> Checkbox 2
+                </label>
+            </fieldset>
+            <fieldset>
+                <label>
+                    <input type='radio' name='radio' value='Option 1' checked='checked'> Option 1
+                </label>
+                <label>
+                    <input type='radio' name='radio' value='Option 2'> Option 2
+                </label>
+                <label>
+                    <input type='radio' name='radio' value='Option 3'> Option 3
+                </label>
+            </fieldset>
+            <fieldset>
+                <textarea name='textarea'>Inner text area.</textarea>
+            </fieldset>
+            <fieldset>
+                <select name='select' form='test-form'>
+                    <option value='a'>A</option>
+                    <option value='b'>B</option>
+                    <option value='c'>C</option>
+                    <option value='d'>D</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <select name='select-m' form='test-form' multiple='multiple'>
+                    <option value='a-m'>A</option>
+                    <option value='b-m'>B</option>
+                    <option value='c-m'>C</option>
+                    <option value='d-m'>D</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <input type='color' name='color'>
+            </fieldset>
+            <fieldset>
+                <input type='date' name='date'>
+            </fieldset>
+            <fieldset>
+                <input type='datetime-local' name='timestamp'>
+            </fieldset>
+            <fieldset>
+                <input type='email' name='email'>
+            </fieldset>
+            <fieldset>
+                <input type='file' name='file'>
+            </fieldset>
+            <fieldset>
+                <input type='month' name='month'>
+            </fieldset>
+            <fieldset>
+                <input type='number' name='number'>
+            </fieldset>
+            <fieldset>
+                <input type='password' name='password'>
+            </fieldset>
+            <fieldset>
+                <input type='range' name='range'>
+            </fieldset>
+            <fieldset>
+                <input type='search' name='search'>
+            </fieldset>
+            <fieldset>
+                <input type='tel' name='tel'>
+            </fieldset>
+            <fieldset>
+                <input type='time' name='time'>
+            </fieldset>
+            <fieldset>
+                <input type='url' name='url'>
+            </fieldset>
+            <fieldset>
+                <input type='week' name='week'>
+            </fieldset>
+            <fieldset>
+                <input type='reset' value='Reset'>
+                <input type='submit' value='Submit'>
+            </fieldset>
+        </form>
+        <hr>
+        <fieldset>
+            External text <input type='text' name='ext-text' form='test-form'>
+        </fieldset>
+        <fieldset>
+            <textarea name='ext-textarea' form='test-form'>External text area.</textarea>
+        </fieldset>
+        <fieldset>
+            <select name='ext-select' form='test-form'>
+                <option value='ext-a'>A</option>
+                <option value='ext-b'>B</option>
+                <option value='ext-c'>C</option>
+                <option value='ext-d'>D</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <select name='ext-select-m' form='test-form' multiple='multiple'>
+                <option value='ext-a-m'>A</option>
+                <option value='ext-b-m'>B</option>
+                <option value='ext-c-m'>C</option>
+                <option value='ext-d-m'>D</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <input type='password' name='ext-password' form='test-form'>
+        </fieldset>
+    </body>
+</html>
