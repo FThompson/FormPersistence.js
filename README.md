@@ -32,9 +32,9 @@ Ensure that you call `persist` after the document has finished loading, either b
 
 ### What if my form has complex elements that require custom data loading?
 
-If your form has elements that are added to the page depending on selected data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed to `persist` through its fourth parameter. The second and third parameters are `useSessionStorage` (default false) and `saveOnSubmit` (default false).
+If your form has elements that are added to the page depending on selected data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed to `persist` through its fourth parameter. The second and third parameters are `useSessionStorage` (default false, save to local storage) and `saveOnSubmit` (default false, clear storage on submit).
 
-The `valueFunctions` parameter is a dictionary object where the keys are form data names and the values are functions that handle loading in the values for those data names.
+The `valueFunctions` parameter takes a dictionary object where the keys are form data names and the values are functions that handle loading in the values for those data names.
 
 ```javascript
 let formValueFunctions = {
@@ -171,3 +171,7 @@ This script supports the following content:
 
 ### Browsers
 `FormPersistence.js` currently does not support Microsoft Edge versions before November 2018 or Internet Explorer.
+
+## Contributing
+
+Found a bug? Have a question or suggestion? Please open an issue [here](https://github.com/FThompson/FormPersistence.js/issues).
