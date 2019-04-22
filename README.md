@@ -26,13 +26,13 @@ let form = document.getElementById('test-form');
 FormPersistence.persist(form);
 ```
 
-Calling `FormPersistence.persist` loads saved form data into the form and sets up event handlers that take care of saving form data. By default, form data is saved to local storage and cleared upon form submission.
+`FormPersistence.persist` loads saved form data into the form and sets up event handlers that take care of saving form data. By default, form data is saved to local storage and cleared upon form submission.
 
 Ensure that you call `persist` after the document has finished loading, either by using an `onLoad` event handler or by adding `defer` to the script import.
 
 ### What if my form has complex elements that require custom data loading?
 
-If your form has rich elements reflecting form data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed to `persist` through its fourth parameter. The second and third parameters are `useSessionStorage` (default false) and `saveOnSubmit` (default false).
+If your form has elements that are added to the page depending on selected data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed to `persist` through its fourth parameter. The second and third parameters are `useSessionStorage` (default false) and `saveOnSubmit` (default false).
 
 The `valueFunctions` parameter is a dictionary object where the keys are form data names and the values are functions that handle loading in the values for those data names.
 
@@ -65,7 +65,7 @@ Consider a post submission form that takes a title, a post body, and a set of ta
 </form>
 ```
 
-You want users to be able to remove tags they have added, so you create a script that adds a span with each tag and a button to remove that tag. You add tags to the form's data with a hidden input within each span.
+You want users to be able to remove tags they have added, so you create a script that adds a span with each selected tag and a button to remove that tag. You add tags to the form's data as `span` elements each containing a hidden `input` element containing the tag to be submitted in the form's data.
 
 ```javascript
 document.getElementById('add-tag').addEventListener('click', addTag);
@@ -93,7 +93,7 @@ function createTag(tag) {
 }
 ```
 
-If you try to set up form persistence normally on this form, the tag elements would not be created because the script would simply be searching for inputs named `tag` in the document. This scenario requires custom value functions.
+If you try to set up form persistence normally on this form, the script would not create the tag because the script would unable to find any inputs named `tag` in the document. This scenario requires custom value functions.
 
 ```javascript
 let valueFunctions = {
@@ -107,11 +107,11 @@ Pass the value functions to `FormPersistence.persist` and keep the default value
 FormPersistence.persist(form, false, false, valueFunctions);
 ```
 
-*Voila!* The tag elements will now be created upon loading the form's persisted data.
+*Voila!* The `persist` function will now create tag elements upon loading the form's persisted data.
 
 See the complete working example [here](https://jsfiddle.net/fthompson/jz25bfvd/). Change form values and refresh the page to observe persistence.
 
-## Reference
+## API Reference
 
 ```javascript
 FormPersistence.persist(form[, useSessionStorage[, saveOnSubmit[, valueFunctions]]])
@@ -119,13 +119,13 @@ FormPersistence.persist(form[, useSessionStorage[, saveOnSubmit[, valueFunctions
 
 Register a form for persistence. Values are saved to local or session storage on page refresh and optionally on form submission. Default behavior is to use local storage and clear storage upon form submission. Calling this function loads saved data into the form.
 
-Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied (in the order provided) instead of basic value insertion. Useful if your form has complex data elements that require special handling.
+Optionally pass a dictionary of special form value handling functions like `name: fn(form, value)` which will be applied (in the order provided) instead of basic value insertion. The `valueFunctions` parameter is useful if your form has complex data elements that require special handling.
 
 ```javascript
 FormPersistence.save(form[, useSessionStorage])
 ```
 
-Save a form to local or session storage (default local storage). Useful for saving forms at regular intervals to avoid losing progress, for example.
+Save a form to local or session storage (default local storage). This function can be useful for saving forms at regular intervals to avoid losing progress, for example.
 
 ```javascript
 FormPersistence.load(form[, useSessionStorage[, valueFunctions]])
@@ -143,7 +143,7 @@ Clear a form's data from local or session storage (default local storage).
 FormPersistence.serialize(form)
 ```
 
-Serialize a form into an object, skipping password and file inputs.
+Serialize a form into an object, skipping password and file inputs. This function can be useful for saving form progress on a server rather than on the user's machine, for example.
 
 ```javascript
 FormPersistence.deserialize(form, data[, valueFunctions])
@@ -153,21 +153,21 @@ Load a form by deserializing a data object. Optionally pass a dictionary of spec
 
 ---
 
-### Compatibility ###
+## Compatibility
 
-Uses modern JavaScript features (up to ECMAScript 2016) like the `of` operator. Use a compiler like [Babel](https://github.com/babel/babel) if you need to support legacy users.
+Uses modern JavaScript features (ECMAScript 2016). Use a compiler like [Babel](https://github.com/babel/babel) if you need to support legacy users.
 
-Supports the following content:
-* All `<input>` types
-    * `file` is ignored. Browsers do not allow file input values to be set for security reasons.
-    * `password` is ignored to avoid saving passwords in local storage.
-    * `submit` is ignored. Their values should not need to be set upon load.
-    * `button`, `reset`, and `image` types are ignored. Their values are not form data.
+This script supports the following content:
+* All `<input>` types excluding specific exemptions:
+    * `file` type elements are ignored. Browsers do not allow file input values to be set for security reasons.
+    * `password` type elements are ignored to avoid saving passwords in local storage.
+    * `submit` type elements are ignored. This tag's values should not need to be set upon load.
+    * `button`, `reset`, and `image` type elements are ignored. These tags' values are not form data.
 * `<textarea>`
 * `<select>` and `<select multiple>`
-* `<button>` elements are ignored. Their values should not need to be set upon load.
+* `<button>` elements are ignored. This tag's values should not need to be set upon load.
 * Array form inputs.
-* External form elements via `form='form-id'`.
+* External form elements via `form='form-id'` attributes.
 
-#### Browsers
-Currently does not support Microsoft Edge versions before November 2018 or Internet Explorer.
+### Browsers
+`FormPersistence.js` currently does not support Microsoft Edge versions before November 2018 or Internet Explorer.
