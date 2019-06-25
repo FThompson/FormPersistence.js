@@ -1,4 +1,5 @@
 # HTML Form Persistence #
+![](https://img.shields.io/github/release/FThompson/FormPersistence.js.svg)
 [![](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
 A simple API for preserving form values across page refreshes and multiple sessions.
@@ -8,13 +9,13 @@ A simple API for preserving form values across page refreshes and multiple sessi
 Include the script hosted on [jsDelivr CDN](https://www.jsdelivr.com/package/gh/FThompson/FormPersistence.js).
 
 ```html
-<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.1/form-persistence.min.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.2/form-persistence.min.js'></script>
 ```
 
-Or [download the script](https://github.com/FThompson/FormPersistence.js/blob/master/form-persistence.min.js) and include it on your page.
+Or [download the script](https://github.com/FThompson/FormPersistence.js/blob/master/form-persistence.js) and include it on your page.
 
 ```html
-<script src='form-persistence.min.js'></script>
+<script src='form-persistence.js'></script>
 ```
 
 ## Usage

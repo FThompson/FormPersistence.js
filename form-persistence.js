@@ -22,11 +22,21 @@ const FormPersistence = (() => {
      */
     function persist(form, useSessionStorage = false, saveOnSubmit = false, valueFunctions) {
         load(form, useSessionStorage, valueFunctions)
+        // Some devices like ios safari do not support beforeunload events.
+        // Unload event does not work in some situations, so we use both unload/beforeunload
+        // and remove the unload event if the beforeunload event fires successfully.
+        // If problems persist, we can add listeners on the pagehide event as well.
         let saveForm = () => save(form, useSessionStorage)
-        window.addEventListener('beforeunload', saveForm)
+        let saveFormBeforeUnload = () => {
+            window.removeEventListener('unload', saveForm)
+            saveForm()
+        }
+        window.addEventListener('beforeunload', saveFormBeforeUnload)
+        window.addEventListener('unload', saveForm)
         if (!saveOnSubmit) {
             form.addEventListener('submit', () => {
-                window.removeEventListener('beforeunload', saveForm)
+                window.removeEventListener('beforeunload', saveFormBeforeUnload)
+                window.removeEventListener('unload', saveForm)
                 clearStorage(form, useSessionStorage)
             })
         }
