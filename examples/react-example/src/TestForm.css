@@ -1,0 +1,25 @@
+label {
+  display: block;
+}
+
+#create-post > div {
+  margin-bottom: 1rem;
+}
+
+#added-tags > span {
+  display: inline-block;
+  border: 1px solid gray;
+  border-radius: 0.25rem;
+  background-color: lightblue;
+  padding: 0 0.2rem 0.1rem 0.2rem;
+  margin: 0.25rem 0.25rem 0 0;
+}
+
+#added-tags > span > a {
+  margin-left: 0.25rem;
+  cursor: pointer;
+}
+
+#refresh {
+  margin-right: 0.25rem;
+}

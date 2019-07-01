@@ -1,0 +1,1 @@
+This sample was bootstrapped with create-react-app and demonstrates using form persistence in React.

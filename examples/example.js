@@ -1,5 +1,5 @@
 let form = document.getElementById('create-post');
-FormPersistence.persist(form, false, false, valueFunctions={
+FormPersistence.persist(form, false, false, {
     'tag': (form, value) => createTag(value)
 });
 
