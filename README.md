@@ -3,7 +3,7 @@
 [![](https://img.shields.io/bundlephobia/min/form-persistence.svg)](https://www.npmjs.com/package/form-persistence)
 [![](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
-A simple API for preserving form values across page refreshes and multiple sessions.
+A simple library for preserving form values across page refreshes and multiple sessions.
 
 ## Installation
 
@@ -11,16 +11,14 @@ A simple API for preserving form values across page refreshes and multiple sessi
 npm install form-persistence
 ```
 
-Or include the script hosted on [jsDelivr CDN](https://www.jsdelivr.com/package/gh/FThompson/FormPersistence.js).
-
-```html
-<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.3/form-persistence.min.js'></script>
+```javascript
+import FormPersistence from 'form-persistence';
 ```
 
-Or [download the script](https://github.com/FThompson/FormPersistence.js/blob/master/form-persistence.js) and include it on your page.
+Or include the script hosted on jsDelivr CDN or download and link the script directly.
 
 ```html
-<script src='form-persistence.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@1.0.4/form-persistence.min.js'></script>
 ```
 
 ## Usage

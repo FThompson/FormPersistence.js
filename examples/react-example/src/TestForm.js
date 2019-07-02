@@ -1,6 +1,6 @@
 import React from '../node_modules/react';
 import ReactDOM from '../node_modules/react-dom';
-import FormPersistence from './form-persistence.js';
+import FormPersistence from 'form-persistence';
 import './TestForm.css';
 
 export default class TestForm extends React.Component {

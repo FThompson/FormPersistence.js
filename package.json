@@ -1,6 +1,6 @@
 {
   "name": "form-persistence",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A library for preserving form values across page refreshes and multiple sessions.",
   "main": "form-persistence.js",
   "scripts": {
@@ -27,5 +27,5 @@
   "bugs": {
     "url": "https://github.com/FThompson/FormPersistence.js/issues"
   },
-  "homepage": "https://github.com/FThompson/FormPersistence.js#readme"
+  "homepage": "https://github.com/FThompson/FormPersistence.js"
 }
