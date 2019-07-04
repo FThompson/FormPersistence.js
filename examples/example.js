@@ -1,7 +1,7 @@
 let form = document.getElementById('create-post');
-FormPersistence.persist(form, false, false, {
+FormPersistence.persist(form, { valueFunctions: {
     'tag': (form, value) => createTag(value)
-});
+}});
 
 document.getElementById('add-tag').addEventListener('click', addTag);
 document.getElementById('refresh').addEventListener('click', refreshPage);

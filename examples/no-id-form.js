@@ -1,6 +1,9 @@
 let form = document.forms[0];
-FormPersistence.persist(form, false, false, {
-    'tag': (form, value) => createTag(value)
+FormPersistence.persist(form, {
+    uuid: 'my-test-form',
+    valueFunctions: {
+        'tag': (form, value) => createTag(value)
+    }
 });
 
 document.getElementById('add-tag').addEventListener('click', addTag);

@@ -2,43 +2,57 @@
  * Copyright (c) 2019 Finn Thompson, licensed under the MIT License.
  * 
  * This module implements form persistence across sessions via local storage.
- * * Register a form for persistence with `FormPersistence#persist(form[, useSessionStorage[, saveOnSubmit]])`.
- * * Save a form to local storage with `FormPersistence#save(form[, useSessionStorage])`.
- * * Load a saved form (e.g. at window load time) with `FormPersistence#load(form[, useSessionStorage[, valueFunctions]])`.
- * * Clear saved form data with `FormPersistence#clearStorage(form[, useSessionStorage])`.
- * * Serialize form data to an object with `FormPersistence#serialize(form)`.
- * * Deserialize a data object into a form with `FormPersistence#deserialize(form, data[, valueFunctions])`.
+ * * Register a form for persistence with `FormPersistence#persist(form[, options])`.
+ * * Save a form to local storage with `FormPersistence#save(form[, options])`.
+ * * Load a saved form (e.g. at window load time) with `FormPersistence#load(form[, options])`.
+ * * Clear saved form data with `FormPersistence#clearStorage(form[, options])`.
+ * * Serialize form data to an object with `FormPersistence#serialize(form[, options])`.
+ * * Deserialize a data object into a form with `FormPersistence#deserialize(form, data[, options])`.
  * 
  * See https://github.com/FThompson/FormPersistence.js
  */
 const FormPersistence = (() => {
     /**
      * Registers the given form for persistence by saving its data to local or session storage.
-     * Form data will be saved upon page refresh and optionally upon form submission.
+     * Saved form data will be stored upon page refresh and cleared upon form submission.
      * Saved form data will be loaded upon calling this function, typically on page load.
      * 
-     * @param {HTMLFormElement} form              The form to make persistent.
-     * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
-     * @param {Boolean}         saveOnSubmit      Save the form data upon submit if `true`, otherwise `false`. Default `false`.
+     * @param {HTMLFormElement} form    The form to make persistent.
+     * @param {Object}          options Options object containing any of the following:
+     *  * uuid - A unique identifier for this form's storage key.
+     *           Required if using a form without an id. If unspecified, form id will be used.
+     *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
+     *  * saveOnSubmit - Save form data upon submit if `true`. Default `false`.
+     *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
+     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
+     *                   if `true` for better performance on large webpages. Default `false`.
      */
-    function persist(form, useSessionStorage = false, saveOnSubmit = false, valueFunctions) {
-        load(form, useSessionStorage, valueFunctions)
+    function persist(form, options={}) {
+        let defaults = {
+            uuid: null,
+            useSessionStorage: false,
+            saveOnSubmit: false,
+            valueFunctions: null,
+            skipExternal: false
+        }
+        let config = Object.assign({}, defaults, options)
+        load(form, config)
         // Some devices like ios safari do not support beforeunload events.
         // Unload event does not work in some situations, so we use both unload/beforeunload
         // and remove the unload event if the beforeunload event fires successfully.
         // If problems persist, we can add listeners on the pagehide event as well.
-        let saveForm = () => save(form, useSessionStorage)
+        let saveForm = () => save(form, config)
         let saveFormBeforeUnload = () => {
             window.removeEventListener('unload', saveForm)
             saveForm()
         }
         window.addEventListener('beforeunload', saveFormBeforeUnload)
         window.addEventListener('unload', saveForm)
-        if (!saveOnSubmit) {
+        if (!config.saveOnSubmit) {
             form.addEventListener('submit', () => {
                 window.removeEventListener('beforeunload', saveFormBeforeUnload)
                 window.removeEventListener('unload', saveForm)
-                clearStorage(form, useSessionStorage)
+                clearStorage(form, config)
             })
         }
     }
@@ -46,12 +60,21 @@ const FormPersistence = (() => {
     /**
      * Serializes the given form into an object, excluding password and file inputs.
      * 
-     * @param {HTMLFormElement} form The form to serialize.
+     * @param {HTMLFormElement} form    The form to serialize.
+     * @param {Object}          options Options object containing any of the following:
+     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
+     *                   if `true` for better performance on large webpages. Default `false`.
+     * 
+     * @return {Object} The serialized data object.
      */
-    function serialize(form) {
+    function serialize(form, options={}) {
+        let defaults = {
+            skipExternal: false
+        }
+        let config = Object.assign({}, defaults, options)
         let data = {}
         let formData = new FormData(form)
-        let passwordNames = getPasswordInputNames(form)
+        let passwordNames = getPasswordInputNames(form, config.skipExternal)
         for (let key of formData.keys()) {
             if (!passwordNames.includes(key)) {
                 let values = formData.getAll(key).filter(v => v.constructor.name !== 'File')
@@ -66,66 +89,102 @@ const FormPersistence = (() => {
     /**
      * Saves the given form to local or session storage.
      * 
-     * @param {HTMLFormElement} form              The form to serialize to local storage.
-     * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
+     * @param {HTMLFormElement} form    The form to serialize to local storage.
+     * @param {Object}          options Options object containing any of the following:
+     *  * uuid - A unique identifier for this form's storage key.
+     *           Required if using a form without an id. If unspecified, form id will be used.
+     *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
+     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
+     *                   if `true` for better performance on large webpages. Default `false`.
      */
-    function save(form, useSessionStorage = false) {
-        let data = serialize(form)
-        let storage = useSessionStorage ? sessionStorage : localStorage
-        storage.setItem(getStorageKey(form), JSON.stringify(data))
+    function save(form, options={}) {
+        let defaults = {
+            uuid: null,
+            useSessionStorage: false,
+            skipExternal: false
+        }
+        let config = Object.assign({}, defaults, options)
+        let data = serialize(form, config)
+        let storage = config.useSessionStorage ? sessionStorage : localStorage
+        storage.setItem(getStorageKey(form, config.uuid), JSON.stringify(data))
     }
 
     /**
      * Gets all password input elements' names for the given form. Used to filter out password inputs.
      * 
-     * @param {HTMLFormElement} form The form to get password element names of.
+     * @param {HTMLFormElement} form         The form to get password element names of.
+     * @param {Boolean}         skipExternal Skip form elements outside of the form (defined with
+     *                                       `form='form-id'`) if `true` for better performance on
+     *                                       large webpages. Default `false`.
+     * 
+     * @return {Array} The array of all password input names in the form.
      */
-    function getPasswordInputNames(form) {
-        let inputs = getFormElements(form, 'type', 'password')
+    function getPasswordInputNames(form, skipExternal) {
+        let inputs = getFormElements(form, 'type', 'password', skipExternal)
         return Array.from(inputs).map(e => e.name)
     }
 
     /**
      * Loads a given form by deserializing given data, optionally with given special value handling functions.
      * 
-     * @param {HTMLFormElement} form  The form to deserialize data into.
-     * @param {Object} data           The data object to deserialize into the form.
-     * @param {Object} valueFunctions The special value functions, like `name: fn(form, value)`.
+     * @param {HTMLFormElement} form    The form to deserialize data into.
+     * @param {Object}          data    The data object to deserialize into the form.
+     * @param {Object}          options Options object containing any of the following:
+     *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
+     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
+     *                   if `true` for better performance on large webpages. Default `false`.
      */
-    function deserialize(form, data, valueFunctions) {
+    function deserialize(form, data, options={}) {
+        let defaults = {
+            valueFunctions: null,
+            skipExternal: false
+        }
+        let config = Object.assign({}, defaults, options)
         // apply given value functions first
         let speciallyHandled = []
-        if (valueFunctions !== undefined) {
-            speciallyHandled = applySpecialHandlers(data, form, valueFunctions)
+        if (config.valueFunctions !== null) {
+            speciallyHandled = applySpecialHandlers(data, form, config.valueFunctions)
         }
         // fill remaining values normally
         let checkedBoxes = []
         for (let name in data) {
             if (!speciallyHandled.includes(name)) {
-                let inputs = getFormElements(form, 'name', name)
+                let inputs = getFormElements(form, 'name', name, config.skipExternal)
                 inputs.forEach((input, i) => {
                     applyValues(input, data[name], i, checkedBoxes)
                 })
             }
         }
         // unchecked boxes are not included in form data, handle them separately
-        uncheckBoxes(form, checkedBoxes)
+        uncheckBoxes(form, checkedBoxes, config.skipExternal)
     }
 
     /**
      * Loads a given form from local or session storage, optionally with given special value handling functions.
      * Does nothing if no saved values are found.
      * 
-     * @param {HTMLFormElement} form              The form to load saved values into.
-     * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
-     * @param {Object}          valueFunctions    The special value functions, like `name: fn(form, value)`.
+     * @param {HTMLFormElement} form    The form to load saved values into.
+     * @param {Object}          options Options object containing any of the following:
+     *  * uuid - A unique identifier for this form's storage key.
+     *           Required if using a form without an id. If unspecified, form id will be used.
+     *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
+     *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
+     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
+     *                   if `true` for better performance on large webpages. Default `false`.
      */
-    function load(form, useSessionStorage = false, valueFunctions) {
-        let storage = useSessionStorage ? sessionStorage : localStorage
-        let json = storage.getItem(getStorageKey(form))
+    function load(form, options={}) {
+        let defaults = {
+            uuid: null,
+            useSessionStorage: false,
+            skipExternal: false,
+            valueFunctions: null
+        }
+        let config = Object.assign({}, defaults, options)
+        let storage = config.useSessionStorage ? sessionStorage : localStorage
+        let json = storage.getItem(getStorageKey(form, config.uuid))
         if (json) {
             let data = JSON.parse(json)
-            deserialize(form, data, valueFunctions)
+            deserialize(form, data, options)
         }
     }
 
@@ -133,32 +192,44 @@ const FormPersistence = (() => {
      * Clears a given form's data from local or session storage.
      * 
      * @param {HTMLFormElement} form              The form to clear stored data for.
-     * @param {Boolean}         useSessionStorage Uses session storage if `true`, local storage if `false`. Default `false`.
+     * @param {Object}          options Options object containing any of the following:
+     *  * uuid - A unique identifier for this form's storage key.
+     *           Required if using a form without an id. If unspecified, form id will be used.
+     *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      */
-    function clearStorage(form, useSessionStorage = false) {
-        let storage = useSessionStorage ? sessionStorage : localStorage
-        storage.removeItem(getStorageKey(form))
+    function clearStorage(form, options={}) {
+        let defaults = {
+            uuid: null,
+            useSessionStorage: false
+        }
+        let config = Object.assign({}, defaults, options)
+        let storage = config.useSessionStorage ? sessionStorage : localStorage
+        storage.removeItem(getStorageKey(form, config.uuid))
     }
 
     /**
      * Selects the given form's data elements in the document with a given name.
      * 
-     * @param {String} formID The id of the form.
-     * @param {String} name   The name of the input-like tag to select for.
+     * @param {String}  formID       The id of the form.
+     * @param {String}  attribute    The name of the attribute to select a value for.
+     * @param {String}  value        The value of the attribute to select for.
+     * @param {Boolean} skipExternal `true` to skip external form elements.
+     * 
+     * @return {Array} An array containing selected form elements.
      */
-    function getFormElements(form, attribute, value) {
+    function getFormElements(form, attribute, value, skipExternal) {
         let selector = `[${attribute}="${value}"]`
         let buildInternalSelector = (tag) => `${tag}${selector}`
         let tags = [ 'input', 'textarea', 'select' ]
         let internalSelector = tags.map(buildInternalSelector).join()
         let elements = form.querySelectorAll(internalSelector)
-        if (form.id) {
+        if (!skipExternal && form.id) {
             let buildExternalSelector = (tag) => `${tag}${selector}[form="${form.id}"]`
             let externalSelector = tags.map(buildExternalSelector).join()
             let externalElements = document.querySelectorAll(externalSelector)
             return [...elements, ...externalElements]
         }
-        return elements
+        return [...elements]
     }
 
     /**
@@ -229,9 +300,10 @@ const FormPersistence = (() => {
      * 
      * @param {HTMLFormElement} form             The form to clear checked boxes from.
      * @param {Array}           checkboxesToSkip The list of checkboxes to skip because they have already been checked.
+     * @param {Boolean}         skipExternal     `true` to skip external form elements.
      */
-    function uncheckBoxes(form, checkboxesToSkip) {
-        let checkboxes = getFormElements(form, 'type', 'checkbox')
+    function uncheckBoxes(form, checkboxesToSkip, skipExternal) {
+        let checkboxes = getFormElements(form, 'type', 'checkbox', skipExternal)
         for (let checkbox of checkboxes) {
             if (!checkboxesToSkip.includes(checkbox) && checkbox.checked) {
                 checkbox.click()
@@ -243,9 +315,15 @@ const FormPersistence = (() => {
      * Creates a local storage key for the given form.
      * 
      * @param {HTMLFormElement} form The form to create a storage key for.
+     * 
+     * @return {String} The unique form storage key.
+     * @throws {Error} If given a form without an id or uuid.
      */
-    function getStorageKey(form) {
-        return 'form#' + form.id
+    function getStorageKey(form, uuid) {
+        if (!uuid && !form.id) {
+            throw Error('form persistence requires a form id or uuid')
+        }
+        return 'form#' + (uuid ? uuid : form.id)
     }
 
     /**
@@ -271,7 +349,7 @@ const FormPersistence = (() => {
     if (typeof module !== 'undefined' && module.exports) {
         module.exports = exports = FormPersistence
     } else {
-        let root = this || window;
+        let root = this || window
         root.FormPersistence = FormPersistence
     }
 })();

@@ -33,9 +33,9 @@ export default class TestForm extends React.Component {
 
   componentDidMount() {
     let form = ReactDOM.findDOMNode(this);
-    FormPersistence.persist(form, false, false, {
+    FormPersistence.persist(form, { valueFunctions: {
       'tag': (form, value) => this.addTag(value)
-    });
+    }});
   }
 
   render() {
