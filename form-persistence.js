@@ -81,7 +81,7 @@ const FormPersistence = (() => {
      * @param {HTMLFormElement} form The form to get password element names of.
      */
     function getPasswordInputNames(form) {
-        let inputs = getInputsOfType(form, 'password')
+        let inputs = getFormElements(form, 'type', 'password')
         return Array.from(inputs).map(e => e.name)
     }
 
@@ -102,7 +102,7 @@ const FormPersistence = (() => {
         let checkedBoxes = []
         for (let name in data) {
             if (!speciallyHandled.includes(name)) {
-                let inputs = getDataElements(form.id, name)
+                let inputs = getFormElements(form, 'name', name)
                 inputs.forEach((input, i) => {
                     applyValues(input, data[name], i, checkedBoxes)
                 })
@@ -146,18 +146,19 @@ const FormPersistence = (() => {
      * @param {String} formID The id of the form.
      * @param {String} name   The name of the input-like tag to select for.
      */
-    function getDataElements(formID, name) {
-        let buildInternalSelector = (tag) => `form#${formID} ${tag}[name="${name}"]`
-        let buildExternalSelector = (tag) => `${tag}[name="${name}"][form="${formID}"]`
-        let selectors = [
-            buildInternalSelector('input'),
-            buildInternalSelector('textarea'),
-            buildInternalSelector('select'),
-            buildExternalSelector('input'),
-            buildExternalSelector('textarea'),
-            buildExternalSelector('select')
-        ]
-        return document.querySelectorAll(selectors.join())
+    function getFormElements(form, attribute, value) {
+        let selector = `[${attribute}="${value}"]`
+        let buildInternalSelector = (tag) => `${tag}${selector}`
+        let tags = [ 'input', 'textarea', 'select' ]
+        let internalSelector = tags.map(buildInternalSelector).join()
+        let elements = form.querySelectorAll(internalSelector)
+        if (form.id) {
+            let buildExternalSelector = (tag) => `${tag}${selector}[form="${form.id}"]`
+            let externalSelector = tags.map(buildExternalSelector).join()
+            let externalElements = document.querySelectorAll(externalSelector)
+            return [...elements, ...externalElements]
+        }
+        return elements
     }
 
     /**
@@ -230,25 +231,12 @@ const FormPersistence = (() => {
      * @param {Array}           checkboxesToSkip The list of checkboxes to skip because they have already been checked.
      */
     function uncheckBoxes(form, checkboxesToSkip) {
-        let checkboxes = getInputsOfType(form, 'checkbox')
+        let checkboxes = getFormElements(form, 'type', 'checkbox')
         for (let checkbox of checkboxes) {
             if (!checkboxesToSkip.includes(checkbox) && checkbox.checked) {
                 checkbox.click()
             }
         }
-    }
-
-    /**
-     * Gets all inputs of given type for the given form.
-     * 
-     * @param {HTMLFormElement} form The form to get inputs for.
-     * @param {String}          type The input type to get.
-     */
-    function getInputsOfType(form, type) {
-        let selector = `input[type="${type}"]`
-        let internal = form.querySelectorAll(selector)
-        let external = document.querySelectorAll(`${selector}[form=${form.id}]`)
-        return [...internal, ...external]
     }
 
     /**

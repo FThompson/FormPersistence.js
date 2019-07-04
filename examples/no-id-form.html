@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Form Persistence Test - no id</title>
+        <script src='../form-persistence.js' type='text/javascript' defer></script>
+        <script src='no-id-form.js' type='text/javascript' defer></script>
+        <link href='example.css' type='text/css' rel='stylesheet'>
+    </head>
+    <body>
+        <form>
+            <div>
+                <label for='title'>Title</label>
+                <input type='text' name='title' id='title'>
+            </div>
+            <div>
+                <label for='post-body'>Body</label>
+                <textarea name='post-body' id='post-body'></textarea>
+            </div>
+            <div>
+                <label for='tags'>Tags</label>
+                <input type='text' id='tag-input'><button type='button' id='add-tag'>Add</button>
+                <div id='added-tags'></div>
+            </div>
+            <div>
+                <button type='button' id='refresh'>Refresh Page</button><input type='submit'>
+            </div>
+        </form>
+    </body>
+</html>
