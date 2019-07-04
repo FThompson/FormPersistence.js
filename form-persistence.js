@@ -73,13 +73,38 @@ const FormPersistence = (() => {
         }
         let config = Object.assign({}, defaults, options)
         let data = {}
-        let formData = new FormData(form)
-        let passwordNames = getPasswordInputNames(form, config.skipExternal)
-        for (let key of formData.keys()) {
-            if (!passwordNames.includes(key)) {
-                let values = formData.getAll(key).filter(v => v.constructor.name !== 'File')
-                if (values.length > 0) {
-                    data[key] = values
+        let elements = getFormElements(form, config.skipExternal)
+        for (let element of elements) {
+            let tag = element.tagName
+            let type = element.type
+            if (tag === 'INPUT' && (type === 'password' || type === 'file')) {
+                continue // do not serialize passwords or files
+            }
+            if (!(element.name in data)) {
+                data[element.name] = []
+            }
+            if (tag === 'INPUT') {
+                let type = element.type
+                if (type === 'radio') {
+                    if (element.checked) {
+                        data[element.name].push(element.value)
+                    }
+                } else if (type === 'checkbox') {
+                    data[element.name].push(element.checked)
+                } else {
+                    data[element.name].push(element.value)
+                }
+            } else if (tag === 'TEXTAREA') {
+                data[element.name].push(element.value)
+            } else if (tag === 'SELECT') {
+                if (element.multiple) {
+                    for (let option of element.options) {
+                        if (option.selected) {
+                            data[element.name].push(option.value)
+                        }
+                    }
+                } else {
+                    data[element.name].push(element.value)
                 }
             }
         }
@@ -110,21 +135,6 @@ const FormPersistence = (() => {
     }
 
     /**
-     * Gets all password input elements' names for the given form. Used to filter out password inputs.
-     * 
-     * @param {HTMLFormElement} form         The form to get password element names of.
-     * @param {Boolean}         skipExternal Skip form elements outside of the form (defined with
-     *                                       `form='form-id'`) if `true` for better performance on
-     *                                       large webpages. Default `false`.
-     * 
-     * @return {Array} The array of all password input names in the form.
-     */
-    function getPasswordInputNames(form, skipExternal) {
-        let inputs = getFormElements(form, skipExternal, 'type', 'password', true)
-        return Array.from(inputs).map(e => e.name)
-    }
-
-    /**
      * Loads a given form by deserializing given data, optionally with given special value handling functions.
      * 
      * @param {HTMLFormElement} form    The form to deserialize data into.
@@ -146,17 +156,14 @@ const FormPersistence = (() => {
             speciallyHandled = applySpecialHandlers(data, form, config.valueFunctions)
         }
         // fill remaining values normally
-        let checkedBoxes = []
         for (let name in data) {
             if (!speciallyHandled.includes(name)) {
                 let inputs = getFormElements(form, config.skipExternal, 'name', name)
                 inputs.forEach((input, i) => {
-                    applyValues(input, data[name], i, checkedBoxes)
+                    applyValues(input, data[name], i)
                 })
             }
         }
-        // unchecked boxes are not included in form data, handle them separately
-        uncheckBoxes(form, checkedBoxes, config.skipExternal)
     }
 
     /**
@@ -209,18 +216,19 @@ const FormPersistence = (() => {
 
     /**
      * Selects the given form's data elements in the document with a given name.
+     * Leave the attribute parameter empty to select for all elements.
      * 
      * @param {String}  formID       The id of the form.
+     * @param {Boolean} skipExternal `true` to skip external form elements.
      * @param {String}  attribute    The name of the attribute to select a value for.
      * @param {String}  value        The value of the attribute to select for.
-     * @param {Boolean} skipExternal `true` to skip external form elements.
      * 
      * @return {Array} An array containing selected form elements.
      */
-    function getFormElements(form, skipExternal, attribute, value, inputOnly=false) {
+    function getFormElements(form, skipExternal, attribute, value) {
         let selector = attribute ? `[${attribute}="${value}"]` : ''
         let buildInternalSelector = (tag) => `${tag}${selector}`
-        let tags = inputOnly ? [ 'input' ] : [ 'input', 'textarea', 'select' ]
+        let tags = [ 'input', 'textarea', 'select' ]
         let internalSelector = tags.map(buildInternalSelector).join()
         let elements = form.querySelectorAll(internalSelector)
         if (!skipExternal && form.id) {
@@ -241,21 +249,14 @@ const FormPersistence = (() => {
      * @param {Number} index        The index of the value array to apply if applicable.
      * @param {Array} checkedBoxes  The array of checkboxes to add any clicked checkboxes to.
      */
-    function applyValues(element, values, index, checkedBoxes) {
+    function applyValues(element, values, index) {
         let tag = element.tagName
         if (tag === 'INPUT') {
             let type = element.type
             if (type === 'radio') {
-                if (element.value === values[0] && !element.checked) {
-                    element.click()
-                }
+                element.checked = (element.value === values[0])
             } else if (type === 'checkbox') {
-                if (values.includes(element.value)) {
-                    if (!element.checked) {
-                        element.click()
-                    }
-                    checkedBoxes.push(element)
-                }
+                element.checked = values[0]
             } else {
                 element.value = values[index]
             }
@@ -292,23 +293,6 @@ const FormPersistence = (() => {
             }
         }
         return speciallyHandled
-    }
-
-    /**
-     * Unchecks all checkboxes in the given form unless they exist in the given array.
-     * This check is necessary because unchecked boxes are not included in form data.
-     * 
-     * @param {HTMLFormElement} form             The form to clear checked boxes from.
-     * @param {Array}           checkboxesToSkip The list of checkboxes to skip because they have already been checked.
-     * @param {Boolean}         skipExternal     `true` to skip external form elements.
-     */
-    function uncheckBoxes(form, checkboxesToSkip, skipExternal) {
-        let checkboxes = getFormElements(form, skipExternal, 'type', 'checkbox', true)
-        for (let checkbox of checkboxes) {
-            if (!checkboxesToSkip.includes(checkbox) && checkbox.checked) {
-                checkbox.click()
-            }
-        }
     }
 
     /**
