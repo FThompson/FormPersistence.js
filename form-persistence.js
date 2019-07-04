@@ -81,8 +81,7 @@ const FormPersistence = (() => {
      * @param {HTMLFormElement} form The form to get password element names of.
      */
     function getPasswordInputNames(form) {
-        let selector = `form#${form.id} input[type="password"],input[type="password"][form="${form.id}"]`
-        let inputs = document.querySelectorAll(selector)
+        let inputs = getInputsOfType(form, 'password')
         return Array.from(inputs).map(e => e.name)
     }
 
@@ -231,12 +230,25 @@ const FormPersistence = (() => {
      * @param {Array}           checkboxesToSkip The list of checkboxes to skip because they have already been checked.
      */
     function uncheckBoxes(form, checkboxesToSkip) {
-        let checkboxes = form.querySelectorAll('input[type="checkbox"]')
+        let checkboxes = getInputsOfType(form, 'checkbox')
         for (let checkbox of checkboxes) {
             if (!checkboxesToSkip.includes(checkbox) && checkbox.checked) {
                 checkbox.click()
             }
         }
+    }
+
+    /**
+     * Gets all inputs of given type for the given form.
+     * 
+     * @param {HTMLFormElement} form The form to get inputs for.
+     * @param {String}          type The input type to get.
+     */
+    function getInputsOfType(form, type) {
+        let selector = `input[type="${type}"]`
+        let internal = form.querySelectorAll(selector)
+        let external = document.querySelectorAll(`${selector}[form=${form.id}]`)
+        return [...internal, ...external]
     }
 
     /**
