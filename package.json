@@ -4,7 +4,7 @@
   "description": "A library for preserving HTML form values across page refreshes and multiple sessions.",
   "main": "form-persistence.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "directories": {
     "example": "examples"
@@ -28,5 +28,14 @@
   "bugs": {
     "url": "https://github.com/FThompson/FormPersistence.js/issues"
   },
-  "homepage": "https://github.com/FThompson/FormPersistence.js"
+  "homepage": "https://github.com/FThompson/FormPersistence.js",
+  "devDependencies": {
+    "@babel/core": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0"
+  },
+  "files": [
+    
+  ]
 }
