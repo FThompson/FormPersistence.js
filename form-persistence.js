@@ -120,7 +120,7 @@ const FormPersistence = (() => {
      * @return {Array} The array of all password input names in the form.
      */
     function getPasswordInputNames(form, skipExternal) {
-        let inputs = getFormElements(form, 'type', 'password', skipExternal)
+        let inputs = getFormElements(form, skipExternal, 'type', 'password', true)
         return Array.from(inputs).map(e => e.name)
     }
 
@@ -149,7 +149,7 @@ const FormPersistence = (() => {
         let checkedBoxes = []
         for (let name in data) {
             if (!speciallyHandled.includes(name)) {
-                let inputs = getFormElements(form, 'name', name, config.skipExternal)
+                let inputs = getFormElements(form, config.skipExternal, 'name', name)
                 inputs.forEach((input, i) => {
                     applyValues(input, data[name], i, checkedBoxes)
                 })
@@ -217,10 +217,10 @@ const FormPersistence = (() => {
      * 
      * @return {Array} An array containing selected form elements.
      */
-    function getFormElements(form, attribute, value, skipExternal) {
-        let selector = `[${attribute}="${value}"]`
+    function getFormElements(form, skipExternal, attribute, value, inputOnly=false) {
+        let selector = attribute ? `[${attribute}="${value}"]` : ''
         let buildInternalSelector = (tag) => `${tag}${selector}`
-        let tags = [ 'input', 'textarea', 'select' ]
+        let tags = inputOnly ? [ 'input' ] : [ 'input', 'textarea', 'select' ]
         let internalSelector = tags.map(buildInternalSelector).join()
         let elements = form.querySelectorAll(internalSelector)
         if (!skipExternal && form.id) {
@@ -303,7 +303,7 @@ const FormPersistence = (() => {
      * @param {Boolean}         skipExternal     `true` to skip external form elements.
      */
     function uncheckBoxes(form, checkboxesToSkip, skipExternal) {
-        let checkboxes = getFormElements(form, 'type', 'checkbox', skipExternal)
+        let checkboxes = getFormElements(form, skipExternal, 'type', 'checkbox', true)
         for (let checkbox of checkboxes) {
             if (!checkboxesToSkip.includes(checkbox) && checkbox.checked) {
                 checkbox.click()
