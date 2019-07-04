@@ -17,8 +17,8 @@ export const CheckboxForm = `
 
 export const RadioForm = `
     <form>
-        <input type='radio' name='test' value='A' checked />
-        <input type='radio' name='test' value='B' />
+        <input type='radio' name='test' value='a' checked />
+        <input type='radio' name='test' value='b' />
     </form>
 `;
 

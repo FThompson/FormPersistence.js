@@ -26,7 +26,7 @@ const formTests = [
         label: 'serializes radio input',
         form: Forms.RadioForm,
         setup: form => form.elements[1].checked = true,
-        validate: data => data.toEqual({ test: ['B'] })
+        validate: data => data.toEqual({ test: ['b'] })
     },
     {
         label: 'serializes textarea',
