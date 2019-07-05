@@ -1,5 +1,5 @@
-import FormPersistence from '../form-persistence';
-import * as Forms from './forms';
+const FormPersistence = require('../form-persistence');
+const Forms = require('./forms');
 
 const formTests = [
     {
@@ -10,12 +10,13 @@ const formTests = [
     },
     // External form test fails due to a bug in the version of jsdom used by jest.
     // See: https://github.com/facebook/jest/issues/8645
-    /*{
-        label: 'deserializes external form',
-        form: Forms.ExternalForm,
-        data: { test: ['test-value'] },
-        validate: form => form.elements['test'].value === 'test-value'
-    },*/
+    // See: https://github.com/jsdom/jsdom/issues/2628
+    // {
+    //     label: 'deserializes external form',
+    //     form: Forms.ExternalForm,
+    //     data: { test: ['test-value'] },
+    //     validate: form => form.elements['test'].value === 'test-value'
+    // },
     {
         label: 'deserializes checkbox',
         form: Forms.CheckboxForm,

@@ -1,34 +1,34 @@
-export const SimpleForm = `
+module.exports.SimpleForm = `
     <form>
         <input type='text' name='test' />
     </form>
 `;
 
-export const ExternalForm = `
-    <form id='test-form'><input type='text' name='test2' /></form>
+module.exports.ExternalForm = `
+    <form id='test-form'></form>
     <input type='text' name='test' form='test-form' />
 `;
 
-export const CheckboxForm = `
+module.exports.CheckboxForm = `
     <form>
         <input type='checkbox' name='test' />
     </form>
 `;
 
-export const RadioForm = `
+module.exports.RadioForm = `
     <form>
         <input type='radio' name='test' value='a' checked />
         <input type='radio' name='test' value='b' />
     </form>
 `;
 
-export const TextareaForm = `
+module.exports.TextareaForm = `
     <form>
         <textarea name='test' />
     </form>
 `;
 
-export const SelectForm = `
+module.exports.SelectForm = `
     <form>
         <select name='test'>
             <option value='a'>A</option>
@@ -37,7 +37,7 @@ export const SelectForm = `
     </form>
 `;
 
-export const SelectMultipleForm = `
+module.exports.SelectMultipleForm = `
     <form>
         <select name='test' multiple='multiple'>
             <option value='a'>A</option>
@@ -47,13 +47,13 @@ export const SelectMultipleForm = `
     </form>
 `;
 
-export const FileForm = `
+module.exports.FileForm = `
     <form>
         <input type='file' name='test' />
     </form>
 `;
 
-export const PasswordForm = `
+module.exports.PasswordForm = `
     <form>
         <input type='password' name='test' />
     </form>

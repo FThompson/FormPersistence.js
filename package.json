@@ -30,12 +30,8 @@
   },
   "homepage": "https://github.com/FThompson/FormPersistence.js",
   "devDependencies": {
-    "@babel/core": "^7.5.0",
-    "@babel/preset-env": "^7.5.0",
-    "babel-jest": "^24.8.0",
     "jest": "^24.8.0"
   },
-  "files": [
-    
-  ]
+  "files": [],
+  "dependencies": {}
 }
