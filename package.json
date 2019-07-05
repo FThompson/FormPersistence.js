@@ -4,7 +4,7 @@
   "description": "A library for preserving HTML form values across page refreshes and multiple sessions.",
   "main": "form-persistence.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "directories": {
     "example": "examples"
