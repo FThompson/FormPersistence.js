@@ -36,7 +36,7 @@ Ensure that you call `persist` after the document has finished loading, either b
 
 ### What if my form has complex elements that require custom data loading?
 
-If your form has elements that are added to the page depending on selected data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed in the `options` object parameter. Other options include `uuid`, `useSessionStorage`, `saveOnSubmit`, and `skipExternal`. See details in the below API reference.
+If your form has elements that are added to the page depending on selected data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed in the `options` object parameter. Other options include `uuid`, `useSessionStorage`, and `saveOnSubmit`. See details in the below API reference.
 
 The `valueFunctions` parameter takes a dictionary object where the keys are form data names and the values are functions that handle loading in the values for those data names.
 
@@ -127,7 +127,6 @@ Options can include any of the following:
 * `uuid` Define a custom storage key to avoid conflicts. If your form has an id, that id will be used by default. If your form does not have an id, you **must** define a `uuid` or an error will be thrown.
 * `useSessionStorage` Use session storage if `true`, local storage if `false`. Local storage will be used by default.
 * `saveOnSubmit` Save form data upon submit if `true`, clear form data upon submit if `false`. Default `false`.
-* `skipExternal` Skip form elements defined outside of the form hierarchy if `true`, such as those defined with the `form='form-id'` attribute. If your form does not use external inputs, setting this option to `true` can improve performance on large webpages. Default `false`.
 * `valueFunctions` Provide special form value handling functions to be applied (in the order defined) instead of basic value insertion. This option must be an object containing key value pairs like `name: fn(form, value)`. This option can be necessary if your form has complex data elements that require special handling. See the above example for a detailed usage.
 
 ```javascript
@@ -139,7 +138,6 @@ Save a form to local or session storage (default local storage). This function c
 Options can include any of the following:
 * `uuid` Define a custom storage key to avoid conflicts. If your form has an id, that id will be used by default. If your form does not have an id, you **must** define a `uuid` or an error will be thrown.
 * `useSessionStorage` Use session storage if `true`, local storage if `false`. Local storage will be used by default.
-* `skipExternal` Skip form elements defined outside of the form hierarchy if `true`, such as those defined with the `form='form-id'` attribute. If your form does not use external inputs, setting this option to `true` can improve performance on large webpages. Default `false`.
 
 ```javascript
 FormPersistence.load(form[, options])
@@ -150,7 +148,6 @@ Load a form from local or session storage (default local storage).
 Options can include any of the following:
 * `uuid` Define a custom storage key to avoid conflicts. If your form has an id, that id will be used by default. If your form does not have an id, you **must** define a `uuid` or an error will be thrown.
 * `useSessionStorage` Use session storage if `true`, local storage if `false`. Local storage will be used by default.
-* `skipExternal` Skip form elements defined outside of the form hierarchy if `true`, such as those defined with the `form='form-id'` attribute. If your form does not use external inputs, setting this option to `true` can improve performance on large webpages. Default `false`.
 * `valueFunctions` Provide special form value handling functions to be applied (in the order defined) instead of basic value insertion. This option must be an object containing key value pairs like `name: fn(form, value)`. This option can be necessary if your form has complex data elements that require special handling. See the above example for a detailed usage.
 
 ```javascript
@@ -164,13 +161,10 @@ Options can include any of the following:
 * `useSessionStorage` Use session storage if `true`, local storage if `false`. Local storage will be used by default.
 
 ```javascript
-FormPersistence.serialize(form[, options])
+FormPersistence.serialize(form)
 ```
 
 Serialize a form into an object, skipping password and file inputs. This function can be useful for storing form progress on a server rather than on the user's machine, for example.
-
-Options can include any of the following:
-* `skipExternal` Skip form elements defined outside of the form hierarchy if `true`, such as those defined with the `form='form-id'` attribute. If your form does not use external inputs, setting this option to `true` can improve performance on large webpages. Default `false`.
 
 ```javascript
 FormPersistence.deserialize(form, data[, options])
@@ -179,7 +173,6 @@ FormPersistence.deserialize(form, data[, options])
 Load a form by deserializing a data object.
 
 Options can include any of the following:
-* `skipExternal` Skip form elements defined outside of the form hierarchy if `true`, such as those defined with the `form='form-id'` attribute. If your form does not use external inputs, setting this option to `true` can improve performance on large webpages. Default `false`.
 * `valueFunctions` Provide special form value handling functions to be applied (in the order defined) instead of basic value insertion. This option must be an object containing key value pairs like `name: fn(form, value)`. This option can be necessary if your form has complex data elements that require special handling. See the above example for a detailed usage.
 
 ---

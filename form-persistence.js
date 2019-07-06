@@ -6,7 +6,7 @@
  * * Save a form to local storage with `FormPersistence#save(form[, options])`.
  * * Load a saved form (e.g. at window load time) with `FormPersistence#load(form[, options])`.
  * * Clear saved form data with `FormPersistence#clearStorage(form[, options])`.
- * * Serialize form data to an object with `FormPersistence#serialize(form[, options])`.
+ * * Serialize form data to an object with `FormPersistence#serialize(form)`.
  * * Deserialize a data object into a form with `FormPersistence#deserialize(form, data[, options])`.
  * 
  * See https://github.com/FThompson/FormPersistence.js
@@ -24,16 +24,13 @@ const FormPersistence = (() => {
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      *  * saveOnSubmit - Save form data upon submit if `true`. Default `false`.
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
-     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
-     *                   if `true` for better performance on large webpages. Default `false`.
      */
     function persist(form, options={}) {
         let defaults = {
             uuid: null,
             useSessionStorage: false,
             saveOnSubmit: false,
-            valueFunctions: null,
-            skipExternal: false
+            valueFunctions: null
         }
         let config = Object.assign({}, defaults, options)
         load(form, config)
@@ -60,21 +57,13 @@ const FormPersistence = (() => {
     /**
      * Serializes the given form into an object, excluding password and file inputs.
      * 
-     * @param {HTMLFormElement} form    The form to serialize.
-     * @param {Object}          options Options object containing any of the following:
-     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
-     *                   if `true` for better performance on large webpages. Default `false`.
+     * @param {HTMLFormElement} form The form to serialize.
      * 
      * @return {Object} The serialized data object.
      */
-    function serialize(form, options={}) {
-        let defaults = {
-            skipExternal: false
-        }
-        let config = Object.assign({}, defaults, options)
+    function serialize(form) {
         let data = {}
-        let elements = getFormElements(form, config.skipExternal)
-        for (let element of elements) {
+        for (let element of form.elements) {
             let tag = element.tagName
             let type = element.type
             if (tag === 'INPUT' && (type === 'password' || type === 'file')) {
@@ -119,14 +108,11 @@ const FormPersistence = (() => {
      *  * uuid - A unique identifier for this form's storage key.
      *           Required if using a form without an id. If unspecified, form id will be used.
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
-     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
-     *                   if `true` for better performance on large webpages. Default `false`.
      */
     function save(form, options={}) {
         let defaults = {
             uuid: null,
-            useSessionStorage: false,
-            skipExternal: false
+            useSessionStorage: false
         }
         let config = Object.assign({}, defaults, options)
         let data = serialize(form, config)
@@ -141,13 +127,10 @@ const FormPersistence = (() => {
      * @param {Object}          data    The data object to deserialize into the form.
      * @param {Object}          options Options object containing any of the following:
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
-     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
-     *                   if `true` for better performance on large webpages. Default `false`.
      */
     function deserialize(form, data, options={}) {
         let defaults = {
-            valueFunctions: null,
-            skipExternal: false
+            valueFunctions: null
         }
         let config = Object.assign({}, defaults, options)
         // apply given value functions first
@@ -158,7 +141,7 @@ const FormPersistence = (() => {
         // fill remaining values normally
         for (let name in data) {
             if (!speciallyHandled.includes(name)) {
-                let inputs = getFormElements(form, config.skipExternal, 'name', name)
+                let inputs = [...form.elements].filter(elem => elem.name === name)
                 inputs.forEach((input, i) => {
                     applyValues(input, data[name], i)
                 })
@@ -176,14 +159,11 @@ const FormPersistence = (() => {
      *           Required if using a form without an id. If unspecified, form id will be used.
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
-     *  * skipExternal - Skip form elements outside of the form (defined with `form='form-id'`)
-     *                   if `true` for better performance on large webpages. Default `false`.
      */
     function load(form, options={}) {
         let defaults = {
             uuid: null,
             useSessionStorage: false,
-            skipExternal: false,
             valueFunctions: null
         }
         let config = Object.assign({}, defaults, options)
@@ -212,32 +192,6 @@ const FormPersistence = (() => {
         let config = Object.assign({}, defaults, options)
         let storage = config.useSessionStorage ? sessionStorage : localStorage
         storage.removeItem(getStorageKey(form, config.uuid))
-    }
-
-    /**
-     * Selects the given form's data elements in the document with a given name.
-     * Leave the attribute parameter empty to select for all elements.
-     * 
-     * @param {String}  formID       The id of the form.
-     * @param {Boolean} skipExternal `true` to skip external form elements.
-     * @param {String}  attribute    The name of the attribute to select a value for.
-     * @param {String}  value        The value of the attribute to select for.
-     * 
-     * @return {Array} An array containing selected form elements.
-     */
-    function getFormElements(form, skipExternal, attribute, value) {
-        let selector = attribute ? `[${attribute}="${value}"]` : ''
-        let buildInternalSelector = (tag) => `${tag}${selector}`
-        let tags = [ 'input', 'textarea', 'select' ]
-        let internalSelector = tags.map(buildInternalSelector).join()
-        let elements = form.querySelectorAll(internalSelector)
-        if (!skipExternal && form.id) {
-            let buildExternalSelector = (tag) => `${tag}${selector}[form="${form.id}"]`
-            let externalSelector = tags.map(buildExternalSelector).join()
-            let externalElements = document.querySelectorAll(externalSelector)
-            return [...elements, ...externalElements]
-        }
-        return [...elements]
     }
 
     /**
