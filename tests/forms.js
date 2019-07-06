@@ -1,34 +1,34 @@
-module.exports.SimpleForm = `
+const SimpleForm = `
     <form>
         <input type='text' name='test' />
     </form>
 `;
 
-module.exports.ExternalForm = `
+const ExternalForm = `
     <form id='test-form'></form>
     <input type='text' name='test' form='test-form' />
 `;
 
-module.exports.CheckboxForm = `
+const CheckboxForm = `
     <form>
         <input type='checkbox' name='test' />
     </form>
 `;
 
-module.exports.RadioForm = `
+const RadioForm = `
     <form>
         <input type='radio' name='test' value='a' checked />
         <input type='radio' name='test' value='b' />
     </form>
 `;
 
-module.exports.TextareaForm = `
+const TextareaForm = `
     <form>
         <textarea name='test' />
     </form>
 `;
 
-module.exports.SelectForm = `
+const SelectForm = `
     <form>
         <select name='test'>
             <option value='a'>A</option>
@@ -37,7 +37,7 @@ module.exports.SelectForm = `
     </form>
 `;
 
-module.exports.SelectMultipleForm = `
+const SelectMultipleForm = `
     <form>
         <select name='test' multiple='multiple'>
             <option value='a'>A</option>
@@ -47,14 +47,26 @@ module.exports.SelectMultipleForm = `
     </form>
 `;
 
-module.exports.FileForm = `
+const FileForm = `
     <form>
         <input type='file' name='test' />
     </form>
 `;
 
-module.exports.PasswordForm = `
+const PasswordForm = `
     <form>
         <input type='password' name='test' />
     </form>
 `;
+
+module.exports = {
+    SimpleForm,
+    ExternalForm,
+    CheckboxForm,
+    RadioForm,
+    TextareaForm,
+    SelectForm,
+    SelectMultipleForm,
+    FileForm,
+    PasswordForm
+};
