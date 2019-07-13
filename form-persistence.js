@@ -29,10 +29,7 @@ const FormPersistence = (() => {
      */
     function persist(form, options) {
         let defaults = {
-            uuid: null,
-            useSessionStorage: false,
-            saveOnSubmit: false,
-            valueFunctions: null
+            saveOnSubmit: false
         }
         let config = Object.assign({}, defaults, options)
         load(form, config)
@@ -211,8 +208,7 @@ const FormPersistence = (() => {
     function load(form, options) {
         let defaults = {
             uuid: null,
-            useSessionStorage: false,
-            valueFunctions: null
+            useSessionStorage: false
         }
         let config = Object.assign({}, defaults, options)
         let storage = config.useSessionStorage ? sessionStorage : localStorage
@@ -335,6 +331,7 @@ const FormPersistence = (() => {
  * or Q.js for more comprehensive approaches that could be used if needed.
  */
 (function() {
+    // istanbul ignore else
     if (typeof module !== 'undefined' && module.exports) {
         module.exports = exports = FormPersistence
     } else {
