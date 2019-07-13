@@ -118,13 +118,16 @@ const FormPersistence = (() => {
     }
 
     /**
-     * Checks if the given name is filtered out by the given includes/excludes.
+     * Checks if the given name should be filtered out.
      * 
      * @param {String} name    The name of the element to check for.
      * @param {Array}  include The list of names to include.
      * @param {Array}  exclude The list of names to exclude.
      */
     function isNameFiltered(name, include, exclude) {
+        if (!name) {
+            return true
+        }
         if (exclude.includes(name)) {
             return true
         }
