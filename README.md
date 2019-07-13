@@ -18,7 +18,7 @@ import FormPersistence from 'form-persistence';
 Or include the script hosted on jsDelivr CDN or download and link the script directly.
 
 ```html
-<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@2.0.2/form-persistence.min.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@2.0.3/form-persistence.min.js'></script>
 ```
 
 ## Usage
