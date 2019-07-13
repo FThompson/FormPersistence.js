@@ -59,6 +59,26 @@ const formTests = [
                 && form.elements['test2'].value === ''
         },
         options: { include: ['test1'] }
+    },
+    {
+        label: 'does not deserialize excluded names',
+        form: Forms.ComplexForm,
+        data: { test1: ['value1'], test2: ['value2'] },
+        validate: form => {
+            return form.elements['test1'].value === 'value1'
+                && form.elements['test2'].value === ''
+        },
+        options: { exclude: ['test2'] }
+    },
+    {
+        label: 'does not deserialize excluded name with value function',
+        form: Forms.ComplexForm,
+        data: { test1: ['value1'], test2: ['value2'] },
+        validate: form => {
+            return form.elements['test1'].value === 'value1'
+                && form.elements['test2'].value === ''
+        },
+        options: { exclude: ['test2'], valueFunctions: { test2: null }}
     }
 ];
 

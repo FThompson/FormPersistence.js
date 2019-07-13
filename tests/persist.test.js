@@ -26,11 +26,15 @@ test('persists with value functions', () => {
 });
 
 test('persists with value functions and filter', () => {
-    let valueFunction = jest.fn();
-    testPersistenceFilters({ include: ['test1'], valueFunctions: { test1: valueFunction }});
+    let valueFn1 = jest.fn();
+    let valueFn2 = jest.fn();
+    testPersistenceFilters({ include: ['test1'], valueFunctions: {
+        test1: valueFn1, test2: valueFn2
+    }});
     let form = expect.objectContaining({ id: 'test' });
-    expect(valueFunction).toHaveBeenCalledWith(form, 'value1');
-    expect(valueFunction).toHaveBeenCalledTimes(1);
+    expect(valueFn1).toHaveBeenCalledWith(form, 'value1');
+    expect(valueFn1).toHaveBeenCalledTimes(1);
+    expect(valueFn2).toHaveBeenCalledTimes(0);
 });
 
 test('persists with include filter', () => {

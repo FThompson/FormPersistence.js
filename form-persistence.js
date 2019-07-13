@@ -25,7 +25,7 @@ const FormPersistence = (() => {
      *  * saveOnSubmit - Save form data upon submit if `true`. Default `false`.
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
      */
-    function persist(form, options={}) {
+    function persist(form, options) {
         let defaults = {
             uuid: null,
             useSessionStorage: false,
@@ -61,7 +61,7 @@ const FormPersistence = (() => {
      * 
      * @return {Object} The serialized data object.
      */
-    function serialize(form, options={}) {
+    function serialize(form, options) {
         let defaults = {
             include: [],
             exclude: []
@@ -134,7 +134,7 @@ const FormPersistence = (() => {
      *           Required if using a form without an id. If unspecified, form id will be used.
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      */
-    function save(form, options={}) {
+    function save(form, options) {
         let defaults = {
             uuid: null,
             useSessionStorage: false
@@ -153,7 +153,7 @@ const FormPersistence = (() => {
      * @param {Object}          options Options object containing any of the following:
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
      */
-    function deserialize(form, data, options={}) {
+    function deserialize(form, data, options) {
         let defaults = {
             valueFunctions: null,
             include: [],
@@ -190,7 +190,7 @@ const FormPersistence = (() => {
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
      */
-    function load(form, options={}) {
+    function load(form, options) {
         let defaults = {
             uuid: null,
             useSessionStorage: false,
@@ -214,7 +214,7 @@ const FormPersistence = (() => {
      *           Required if using a form without an id. If unspecified, form id will be used.
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      */
-    function clearStorage(form, options={}) {
+    function clearStorage(form, options) {
         let defaults = {
             uuid: null,
             useSessionStorage: false
