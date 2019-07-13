@@ -59,6 +59,13 @@ const PasswordForm = `
     </form>
 `;
 
+const ComplexForm = `
+    <form>
+        <input type='text' name='test1' />
+        <input type='text' name='test2' />
+    </form>
+`;
+
 module.exports = {
     SimpleForm,
     ExternalForm,
@@ -68,5 +75,6 @@ module.exports = {
     SelectForm,
     SelectMultipleForm,
     FileForm,
-    PasswordForm
+    PasswordForm,
+    ComplexForm
 };

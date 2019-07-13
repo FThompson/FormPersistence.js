@@ -61,13 +61,21 @@ const FormPersistence = (() => {
      * 
      * @return {Object} The serialized data object.
      */
-    function serialize(form) {
+    function serialize(form, options={}) {
+        let defaults = {
+            include: [],
+            exclude: []
+        }
+        let config = Object.assign({}, defaults, options)
         let data = {}
         for (let element of form.elements) {
             let tag = element.tagName
             let type = element.type
             if (tag === 'INPUT' && (type === 'password' || type === 'file')) {
                 continue // do not serialize passwords or files
+            }
+            if (isNameFiltered(element.name, config.include, config.exclude)) {
+                continue
             }
             if (!(element.name in data)) {
                 data[element.name] = []
@@ -101,6 +109,23 @@ const FormPersistence = (() => {
     }
 
     /**
+     * Checks if the given name is filtered out by the given includes/excludes.
+     * 
+     * @param {String} name    The name of the element to check for.
+     * @param {Array}  include The list of names to include.
+     * @param {Array}  exclude The list of names to exclude.
+     */
+    function isNameFiltered(name, include, exclude) {
+        if (exclude.includes(name)) {
+            return true
+        }
+        if (include.length > 0 && !include.includes(name)) {
+            return true
+        }
+        return false
+    }
+
+    /**
      * Saves the given form to local or session storage.
      * 
      * @param {HTMLFormElement} form    The form to serialize to local storage.
@@ -130,16 +155,21 @@ const FormPersistence = (() => {
      */
     function deserialize(form, data, options={}) {
         let defaults = {
-            valueFunctions: null
+            valueFunctions: null,
+            include: [],
+            exclude: []
         }
         let config = Object.assign({}, defaults, options)
         // apply given value functions first
         let speciallyHandled = []
         if (config.valueFunctions !== null) {
-            speciallyHandled = applySpecialHandlers(data, form, config.valueFunctions)
+            speciallyHandled = applySpecialHandlers(data, form, config)
         }
         // fill remaining values normally
         for (let name in data) {
+            if (isNameFiltered(name, config.include, config.exclude)) {
+                continue
+            }
             if (!speciallyHandled.includes(name)) {
                 let inputs = [...form.elements].filter(elem => elem.name === name)
                 inputs.forEach((input, i) => {
@@ -236,12 +266,15 @@ const FormPersistence = (() => {
      * 
      * @return {Array} An array containing the data entry names that were handled.
      */
-    function applySpecialHandlers(data, form, valueFunctions) {
+    function applySpecialHandlers(data, form, options) {
         let speciallyHandled = []
-        for (let fnName in valueFunctions) {
+        for (let fnName in options.valueFunctions) {
             if (fnName in data) {
+                if (isNameFiltered(fnName, options.include, options.exclude)) {
+                    continue
+                }
                 for (let value of data[fnName]) {
-                    valueFunctions[fnName](form, value)
+                    options.valueFunctions[fnName](form, value)
                 }
                 speciallyHandled.push(fnName)
             }

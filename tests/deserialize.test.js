@@ -49,6 +49,16 @@ const formTests = [
             let select = form.elements['test'];
             return select.children[0].selected && select.children[2].selected;
         }
+    },
+    {
+        label: 'deserializes included names',
+        form: Forms.ComplexForm,
+        data: { test1: ['value1'], test2: ['value2'] },
+        validate: form => {
+            return form.elements['test1'].value === 'value1'
+                && form.elements['test2'].value === ''
+        },
+        options: { include: ['test1'] }
     }
 ];
 
@@ -56,7 +66,7 @@ formTests.forEach(formTest => {
     test(formTest.label, () => {
         document.body.innerHTML = formTest.form;
         let form = document.forms[0];
-        FormPersistence.deserialize(form, formTest.data);
+        FormPersistence.deserialize(form, formTest.data, formTest.options);
         expect(formTest.validate(form)).toBeTruthy();
     });
 });
