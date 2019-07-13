@@ -1,6 +1,7 @@
 const SimpleForm = `
     <form>
         <input type='text' name='test' />
+        <button name='ignore'>Non-data element</button>
     </form>
 `;
 

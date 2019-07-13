@@ -77,35 +77,42 @@ const FormPersistence = (() => {
             if (isNameFiltered(element.name, config.include, config.exclude)) {
                 continue
             }
-            if (!(element.name in data)) {
-                data[element.name] = []
-            }
             if (tag === 'INPUT') {
                 let type = element.type
                 if (type === 'radio') {
                     if (element.checked) {
-                        data[element.name].push(element.value)
+                        pushToArray(data, element.name, element.value)
                     }
                 } else if (type === 'checkbox') {
-                    data[element.name].push(element.checked)
+                    pushToArray(data, element.name, element.checked)
                 } else {
-                    data[element.name].push(element.value)
+                    pushToArray(data, element.name, element.value)
                 }
             } else if (tag === 'TEXTAREA') {
-                data[element.name].push(element.value)
+                pushToArray(data, element.name, element.value)
             } else if (tag === 'SELECT') {
                 if (element.multiple) {
                     for (let option of element.options) {
                         if (option.selected) {
-                            data[element.name].push(option.value)
+                            pushToArray(data, element.name, option.value)
                         }
                     }
                 } else {
-                    data[element.name].push(element.value)
+                    pushToArray(data, element.name, element.value)
                 }
             }
         }
         return data
+    }
+
+    /**
+     * Add a value to an object, creating an array to place it in if needed.
+     */
+    function pushToArray(dict, key, value) {
+        if (!(key in dict)) {
+            dict[key] = []
+        }
+        dict[key].push(value)
     }
 
     /**

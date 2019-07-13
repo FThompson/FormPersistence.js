@@ -8,6 +8,12 @@ const formTests = [
         data: { test: ['test-value'] },
         validate: form => form.elements['test'].value === 'test-value'
     },
+    {
+        label: 'does not deserialize non-data element',
+        form: Forms.SimpleForm,
+        data: { ignore: ['value'] },
+        validate: form => form.elements['ignore'].value === ''
+    },
     // External form test fails due to a bug in the version of jsdom used by jest.
     // See: https://github.com/facebook/jest/issues/8645
     // See: https://github.com/jsdom/jsdom/issues/2628
