@@ -6,7 +6,7 @@
  * * Save a form to local storage with `FormPersistence#save(form[, options])`.
  * * Load a saved form (e.g. at window load time) with `FormPersistence#load(form[, options])`.
  * * Clear saved form data with `FormPersistence#clearStorage(form[, options])`.
- * * Serialize form data to an object with `FormPersistence#serialize(form)`.
+ * * Serialize form data to an object with `FormPersistence#serialize(form[, options])`.
  * * Deserialize a data object into a form with `FormPersistence#deserialize(form, data[, options])`.
  * 
  * See https://github.com/FThompson/FormPersistence.js
@@ -24,6 +24,8 @@ const FormPersistence = (() => {
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      *  * saveOnSubmit - Save form data upon submit if `true`. Default `false`.
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
+     *  * include - Define a whitelist array of data names to include.
+     *  * exclude - Define a blacklist array of data names to exclude.
      */
     function persist(form, options) {
         let defaults = {
@@ -57,7 +59,10 @@ const FormPersistence = (() => {
     /**
      * Serializes the given form into an object, excluding password and file inputs.
      * 
-     * @param {HTMLFormElement} form The form to serialize.
+     * @param {HTMLFormElement} form    The form to serialize.
+     * @param {Object}          options Options object containing any of the following:
+     *  * include - Define a whitelist array of data names to include.
+     *  * exclude - Define a blacklist array of data names to exclude.
      * 
      * @return {Object} The serialized data object.
      */
@@ -140,6 +145,8 @@ const FormPersistence = (() => {
      *  * uuid - A unique identifier for this form's storage key.
      *           Required if using a form without an id. If unspecified, form id will be used.
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
+     *  * include - Define a whitelist array of data names to include.
+     *  * exclude - Define a blacklist array of data names to exclude.
      */
     function save(form, options) {
         let defaults = {
@@ -159,6 +166,8 @@ const FormPersistence = (() => {
      * @param {Object}          data    The data object to deserialize into the form.
      * @param {Object}          options Options object containing any of the following:
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
+     *  * include - Define a whitelist array of data names to include.
+     *  * exclude - Define a blacklist array of data names to exclude.
      */
     function deserialize(form, data, options) {
         let defaults = {
@@ -196,6 +205,8 @@ const FormPersistence = (() => {
      *           Required if using a form without an id. If unspecified, form id will be used.
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
+     *  * include - Define a whitelist array of data names to include.
+     *  * exclude - Define a blacklist array of data names to exclude.
      */
     function load(form, options) {
         let defaults = {
