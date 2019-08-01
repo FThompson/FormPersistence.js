@@ -11,7 +11,7 @@
  * 
  * See https://github.com/FThompson/FormPersistence.js
  */
-const FormPersistence = (() => {
+const FormPersistence = (function() {
     /**
      * Registers the given form for persistence by saving its data to local or session storage.
      * Saved form data will be stored upon page refresh and cleared upon form submission.
@@ -328,17 +328,11 @@ const FormPersistence = (() => {
 })();
 
 /**
- * Export the module (Node) or place it into the global scope (Browser).
- * 
- * This approach may not cover all use cases; see Underscore.js
- * or Q.js for more comprehensive approaches that could be used if needed.
+ * Export the module if applicable.
  */
 (function() {
     // istanbul ignore else
     if (typeof module !== 'undefined' && module.exports) {
         module.exports = exports = FormPersistence
-    } else {
-        let root = this || window
-        root.FormPersistence = FormPersistence
     }
 })();
