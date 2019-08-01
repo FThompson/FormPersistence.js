@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/FThompson/FormPersistence.js",
   "devDependencies": {
-    "@types/jest": "^24.0.15",
+    "@types/jest": "^24.0.16",
     "jest": "~24.7.1"
   },
   "files": [],
