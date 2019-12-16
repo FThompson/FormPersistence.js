@@ -70,8 +70,8 @@ const ComplexForm = `
 
 const CheckboxArrayForm = `
     <form>
-        <input id='blah1' type='checkbox' name='test' />
-        <input id='blah2' type='checkbox' name='test' />
+        <input type='checkbox' name='test' />
+        <input type='checkbox' name='test' />
     </form>
 `;
 
