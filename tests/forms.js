@@ -68,6 +68,13 @@ const ComplexForm = `
     </form>
 `;
 
+const CheckboxArrayForm = `
+    <form>
+        <input id='blah1' type='checkbox' name='test' />
+        <input id='blah2' type='checkbox' name='test' />
+    </form>
+`;
+
 module.exports = {
     SimpleForm,
     ExternalForm,
@@ -78,5 +85,6 @@ module.exports = {
     SelectMultipleForm,
     FileForm,
     PasswordForm,
-    ComplexForm
+    ComplexForm,
+    CheckboxArrayForm
 };

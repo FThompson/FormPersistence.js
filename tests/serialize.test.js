@@ -82,6 +82,15 @@ const formTests = [
         },
         validate: data => expect(data).toEqual({ test1: ['value1'] }),
         options: { exclude: ['test2'] }
+    },
+    {
+        label: 'serializes checkbox array',
+        form: Forms.CheckboxArrayForm,
+        setup: form => {
+            form.elements[0].checked = false;
+            form.elements[1].checked = true;
+        },
+        validate: data => expect(data).toEqual({ test: [ false, true ]})
     }
 ];
 

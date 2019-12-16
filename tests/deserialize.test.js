@@ -85,6 +85,12 @@ const formTests = [
                 && form.elements['test2'].value === ''
         },
         options: { exclude: ['test2'], valueFunctions: { test2: null }}
+    },
+    {
+        label: 'deserializes checkbox array',
+        form: Forms.CheckboxArrayForm,
+        data: { test: [false, true] },
+        validate: form => !form.elements[0].checked && form.elements[1].checked
     }
 ];
 

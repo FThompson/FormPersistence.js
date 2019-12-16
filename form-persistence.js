@@ -257,7 +257,7 @@ const FormPersistence = (function() {
             if (type === 'radio') {
                 element.checked = (element.value === values[0])
             } else if (type === 'checkbox') {
-                element.checked = values[0]
+                element.checked = values[index]
             } else {
                 element.value = values[index]
             }
