@@ -37,12 +37,20 @@ test('persists with value functions and filter', () => {
     expect(valueFn2).toHaveBeenCalledTimes(0);
 });
 
-test('persists with include filter', () => {
+test('persists with include name filter', () => {
     testPersistenceFilters({ include: ['test1'] });
 });
 
-test('persists with exclude filter', () => {
+test('persists with exclude name filter', () => {
     testPersistenceFilters({ exclude: ['test2'] });
+});
+
+test('persist with include function filter', () => {
+    testPersistenceFilters({ includeFilter: element => element.name.endsWith('1') })
+});
+
+test('persist with exclude function filter', () => {
+    testPersistenceFilters({ excludeFilter: element => element.name.endsWith('2') })
 });
 
 test('throws id error', () => {

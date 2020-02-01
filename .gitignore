@@ -3,3 +3,4 @@ examples/react-example/node_modules/
 lib/
 coverage/
 jsconfig.json
+.vscode/

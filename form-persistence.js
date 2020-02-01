@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2019 Finn Thompson, licensed under the MIT License.
+ * Copyright (c) 2020 Finn Thompson, licensed under the MIT License.
  * 
  * This module implements form persistence across sessions via local storage.
  * * Register a form for persistence with `FormPersistence#persist(form[, options])`.
@@ -11,7 +11,7 @@
  * 
  * See https://github.com/FThompson/FormPersistence.js
  */
-const FormPersistence = (function() {
+const FormPersistence = (function () {
     /**
      * Registers the given form for persistence by saving its data to local or session storage.
      * Saved form data will be stored upon page refresh and cleared upon form submission.
@@ -26,6 +26,10 @@ const FormPersistence = (function() {
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
      *  * include - Define a whitelist array of data names to include.
      *  * exclude - Define a blacklist array of data names to exclude.
+     *  * includeFilter - Define a whitelist filter function that inputs an element and outputs a boolean. The element
+     *                    is included if the function returns true.
+     *  * excludeFilter - Define a blacklist filter function that inputs an element and outputs a boolean. The element
+     *                    is excluded if the function returns true.
      */
     function persist(form, options) {
         let defaults = {
@@ -60,13 +64,19 @@ const FormPersistence = (function() {
      * @param {Object}          options Options object containing any of the following:
      *  * include - Define a whitelist array of data names to include.
      *  * exclude - Define a blacklist array of data names to exclude.
+     *  * includeFilter - Define a whitelist filter function that inputs an element and outputs a boolean. The element
+     *                    is included if the function returns true.
+     *  * excludeFilter - Define a blacklist filter function that inputs an element and outputs a boolean. The element
+     *                    is excluded if the function returns true.
      * 
      * @return {Object} The serialized data object.
      */
     function serialize(form, options) {
         let defaults = {
             include: [],
-            exclude: []
+            exclude: [],
+            includeFilter: null,
+            excludeFilter: null
         }
         let config = Object.assign({}, defaults, options)
         let data = {}
@@ -76,7 +86,8 @@ const FormPersistence = (function() {
             if (tag === 'INPUT' && (type === 'password' || type === 'file')) {
                 continue // do not serialize passwords or files
             }
-            if (isNameFiltered(element.name, config.include, config.exclude)) {
+            if (isNameFiltered(element.name, config.include, config.exclude)
+                    || isElementFiltered(element, config.includeFilter, config.excludeFilter)) {
                 continue
             }
             if (tag === 'INPUT') {
@@ -119,10 +130,6 @@ const FormPersistence = (function() {
 
     /**
      * Checks if the given name should be filtered out.
-     * 
-     * @param {String} name    The name of the element to check for.
-     * @param {Array}  include The list of names to include.
-     * @param {Array}  exclude The list of names to exclude.
      */
     function isNameFiltered(name, include, exclude) {
         if (!name) {
@@ -138,6 +145,19 @@ const FormPersistence = (function() {
     }
 
     /**
+     * Checks if the given element should be filtered out, either by name or by predicate.
+     */
+    function isElementFiltered(element, includeFilter, excludeFilter) {
+        if (excludeFilter && excludeFilter(element)) {
+            return true
+        }
+        if (includeFilter && !includeFilter(element)) {
+            return true
+        }
+        return false
+    }
+
+    /**
      * Saves the given form to local or session storage.
      * 
      * @param {HTMLFormElement} form    The form to serialize to local storage.
@@ -147,6 +167,10 @@ const FormPersistence = (function() {
      *  * useSessionStorage - Use session storage if `true`, local storage if `false`. Default `false`.
      *  * include - Define a whitelist array of data names to include.
      *  * exclude - Define a blacklist array of data names to exclude.
+     *  * includeFilter - Define a whitelist filter function that inputs an element and outputs a boolean. The element
+     *                    is included if the function returns true.
+     *  * excludeFilter - Define a blacklist filter function that inputs an element and outputs a boolean. The element
+     *                    is excluded if the function returns true.
      */
     function save(form, options) {
         let defaults = {
@@ -168,12 +192,18 @@ const FormPersistence = (function() {
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
      *  * include - Define a whitelist array of data names to include.
      *  * exclude - Define a blacklist array of data names to exclude.
+     *  * includeFilter - Define a whitelist filter function that inputs an element and outputs a boolean. The element
+     *                    is included if the function returns true.
+     *  * excludeFilter - Define a blacklist filter function that inputs an element and outputs a boolean. The element
+     *                    is excluded if the function returns true.
      */
     function deserialize(form, data, options) {
         let defaults = {
             valueFunctions: null,
             include: [],
-            exclude: []
+            exclude: [],
+            includeFilter: null,
+            excludeFilter: null
         }
         let config = Object.assign({}, defaults, options)
         // apply given value functions first
@@ -187,7 +217,8 @@ const FormPersistence = (function() {
                 continue
             }
             if (!speciallyHandled.includes(name)) {
-                let inputs = [...form.elements].filter(elem => elem.name === name)
+                let inputs = [...form.elements].filter(element => element.name === name
+                        && !isElementFiltered(element, config.includeFilter, config.excludeFilter))
                 inputs.forEach((input, i) => {
                     applyValues(input, data[name], i)
                 })
@@ -207,6 +238,10 @@ const FormPersistence = (function() {
      *  * valueFunctions - Special value functions to apply, like `name: fn(form, value)`.
      *  * include - Define a whitelist array of data names to include.
      *  * exclude - Define a blacklist array of data names to exclude.
+     *  * includeFilter - Define a whitelist filter function that inputs an element and outputs a boolean. The element
+     *                    is included if the function returns true.
+     *  * excludeFilter - Define a blacklist filter function that inputs an element and outputs a boolean. The element
+     *                    is excluded if the function returns true.
      */
     function load(form, options) {
         let defaults = {
@@ -277,6 +312,8 @@ const FormPersistence = (function() {
     /**
      * Runs given value handling functions in place of basic value insertion.
      * 
+     * Note that inclusion and exclusion filter functions do not apply here.
+     * 
      * @param {Object}          data           The form data being loaded.
      * @param {HTMLFormElement} form           The HTML form being loaded.
      * @param {Object}          valueFunctions The special value functions, like `name: fn(form, value)`.
@@ -330,7 +367,7 @@ const FormPersistence = (function() {
 /**
  * Export the module if applicable.
  */
-(function() {
+(function () {
     // istanbul ignore else
     if (typeof module !== 'undefined' && module.exports) {
         module.exports = exports = FormPersistence

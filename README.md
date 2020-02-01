@@ -18,7 +18,7 @@ import FormPersistence from 'form-persistence';
 Or include the script hosted on jsDelivr CDN or download and link the script directly.
 
 ```html
-<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@2.0.5/form-persistence.min.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/FThompson/FormPersistence.js@2.0.6/form-persistence.min.js'></script>
 ```
 
 ## Usage
@@ -36,7 +36,7 @@ Ensure that you call `persist` after the document has finished loading, either b
 
 ### What if my form has complex elements that require custom data loading?
 
-If your form has elements that are added to the page depending on selected data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed in the `options` object parameter. Other options include `uuid`, `useSessionStorage`, `saveOnSubmit`, `include`, and `exclude`. See details in the below API reference.
+If your form has elements that are added to the page depending on selected data, you can set up custom **value functions** that are invoked when loading data into the persisted form. These functions are passed in the `options` object parameter. Other options include `uuid`, `useSessionStorage`, `saveOnSubmit`, `include`, `exclude`, `includeFilter`, and `excludeFilter`. See details in the below API reference.
 
 The `valueFunctions` parameter takes a dictionary object where the keys are form data names and the values are functions that handle loading in the values for those data names.
 
@@ -129,7 +129,9 @@ Options can include any of the following:
 * `saveOnSubmit` Save form data upon submit if `true`, clear form data upon submit if `false`. Default `false`.
 * `valueFunctions` Provide special form value handling functions to be applied (in the order defined) instead of basic value insertion. This option must be an object containing key value pairs like `name: fn(form, value)`. This option can be necessary if your form has complex data elements that require special handling. See the above example for a detailed usage.
 * `include` Define a whitelist of input names to be included during serialization. This option must be an array of strings.
-* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings.
+* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings. Exclusions take precedence over inclusions.
+* `includeFilter` Define a whitelist filter function that inputs an element and outputs a Boolean. The element is included if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunctions`.
+* `excludeFilter` Define a blacklist filter function that inputs an element and outputs a Boolean. The element is excluded if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunctions`. Exclusions take precedence over inclusions.
 
 ```javascript
 FormPersistence.save(form[, options])
@@ -141,7 +143,9 @@ Options can include any of the following:
 * `uuid` Define a custom storage key to avoid conflicts. If your form has an id, that id will be used by default. If your form does not have an id, you **must** define a `uuid` or an error will be thrown.
 * `useSessionStorage` Use session storage if `true`, local storage if `false`. Local storage will be used by default.
 * `include` Define a whitelist of input names to be included during serialization. This option must be an array of strings.
-* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings.
+* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings. Exclusions take precedence over inclusions.
+* `includeFilter` Define a whitelist filter function that inputs an element and outputs a Boolean. The element is included if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunctions`.
+* `excludeFilter` Define a blacklist filter function that inputs an element and outputs a Boolean. The element is excluded if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunctions`. Exclusions take precedence over inclusions.
 
 ```javascript
 FormPersistence.load(form[, options])
@@ -154,7 +158,9 @@ Options can include any of the following:
 * `useSessionStorage` Use session storage if `true`, local storage if `false`. Local storage will be used by default.
 * `valueFunctions` Provide special form value handling functions to be applied (in the order defined) instead of basic value insertion. This option must be an object containing key value pairs like `name: fn(form, value)`. This option can be necessary if your form has complex data elements that require special handling. See the above example for a detailed usage.
 * `include` Define a whitelist of input names to be included during serialization. This option must be an array of strings.
-* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings.
+* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings. Exclusions take precedence over inclusions.
+* `includeFilter` Define a whitelist filter function that inputs an element and outputs a Boolean. The element is included if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunctions`.
+* `excludeFilter` Define a blacklist filter function that inputs an element and outputs a Boolean. The element is excluded if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunctions`. Exclusions take precedence over inclusions.
 
 ```javascript
 FormPersistence.clearStorage(form[, options])
@@ -174,7 +180,9 @@ Serialize a form into an object, skipping password and file inputs. This functio
 
 Options can include any of the following:
 * `include` Define a whitelist of input names to be included during serialization. This option must be an array of strings.
-* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings.
+* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings. Exclusions take precedence over inclusions.
+* `includeFilter` Define a whitelist filter function that inputs an element and outputs a Boolean. The element is included if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunctions`.
+* `excludeFilter` Define a blacklist filter function that inputs an element and outputs a Boolean. The element is excluded if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunctions`. Exclusions take precedence over inclusions.
 
 ```javascript
 FormPersistence.deserialize(form, data[, options])
@@ -185,7 +193,9 @@ Load a form by deserializing a data object.
 Options can include any of the following:
 * `valueFunctions` Provide special form value handling functions to be applied (in the order defined) instead of basic value insertion. This option must be an object containing key value pairs like `name: fn(form, value)`. This option can be necessary if your form has complex data elements that require special handling. See the above example for a detailed usage.
 * `include` Define a whitelist of input names to be included during serialization. This option must be an array of strings.
-* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings.
+* `exclude` Define a blacklist of input names to be excluded during serialization. This option must be an array of strings. Exclusions take precedence over inclusions.
+* `includeFilter` Define a whitelist filter function that inputs an element and outputs a Boolean. The element is included if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunction`.
+* `excludeFilter` Define a blacklist filter function that inputs an element and outputs a Boolean. The element is excluded if the function returns true. This option must be a function that accepts an element parameter. This filter does not apply to any elements specially handled in `valueFunction`. Exclusions take precedence over inclusions.
 
 ---
 
