@@ -84,6 +84,26 @@ const formTests = [
         options: { exclude: ['test2'] }
     },
     {
+        label: 'serializes elements included by the inclusion filter',
+        form: Forms.ComplexForm,
+        setup: form => {
+            form.elements['test1'].value = 'value1';
+            form.elements['test2'].value = 'value2';
+        },
+        validate: data => expect(data).toEqual({ test1: ['value1']}),
+        options: { includeFilter: element => element.name.endsWith('1') }
+    },
+    {
+        label: 'does not serialize elements excluded by the exclusion filter',
+        form: Forms.ComplexForm,
+        setup: form => {
+            form.elements['test1'].value = 'value1';
+            form.elements['test2'].value = 'value2';
+        },
+        validate: data => expect(data).toEqual({ test1: ['value1'] }),
+        options: { excludeFilter: element => element.name.endsWith('2') }
+    },
+    {
         label: 'serializes checkbox array',
         form: Forms.CheckboxArrayForm,
         setup: form => {

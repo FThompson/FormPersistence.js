@@ -77,6 +77,28 @@ const formTests = [
         options: { exclude: ['test2'] }
     },
     {
+        label: 'deserializes included elements',
+        form: Forms.ComplexForm,
+        data: { test1: ['value1'], test2: ['value2'] },
+        validate: form => {
+            console.log(form.elements['test1'].value)
+            console.log(form.elements['test2'].value)
+            return form.elements['test1'].value === 'value1'
+                && form.elements['test2'].value === ''
+        },
+        options: { includeFilter: element => element.name.endsWith('1') }
+    },
+    {
+        label: 'does not deserialize excluded elements',
+        form: Forms.ComplexForm,
+        data: { test1: ['value1'], test2: ['value2'] },
+        validate: form => {
+            return form.elements['test1'].value === 'value1'
+                && form.elements['test2'].value === ''
+        },
+        options: { excludeFilter: element => element.name.endsWith('2') }
+    },
+    {
         label: 'does not deserialize excluded name with value function',
         form: Forms.ComplexForm,
         data: { test1: ['value1'], test2: ['value2'] },
