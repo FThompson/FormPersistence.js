@@ -1,5 +1,6 @@
 # HTML Form Persistence #
 [![](https://img.shields.io/npm/v/form-persistence.svg)](https://www.npmjs.com/package/form-persistence)
+[![](https://img.shields.io/jsdelivr/gh/hm/FThompson/FormPersistence.js)](https://www.npmjs.com/package/form-persistence)
 [![](https://img.shields.io/bundlephobia/min/form-persistence.svg)](https://www.npmjs.com/package/form-persistence)
 [![](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
