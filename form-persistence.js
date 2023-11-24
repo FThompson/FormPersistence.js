@@ -370,12 +370,4 @@ const FormPersistence = (function () {
     }
 })();
 
-/**
- * Export the module if applicable.
- */
-(function () {
-    // istanbul ignore else
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports = exports = FormPersistence
-    }
-})();
+export default FormPersistence
