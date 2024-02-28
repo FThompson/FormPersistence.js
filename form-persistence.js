@@ -179,6 +179,9 @@ const FormPersistence = (function () {
         }
         let config = Object.assign({}, defaults, options)
         let data = serialize(form, config)
+        if(options.afterSerialize) {
+          data = options.afterSerialize(form, data)
+        }
         let storage = config.useSessionStorage ? sessionStorage : localStorage
         storage.setItem(getStorageKey(form, config.uuid), JSON.stringify(data))
     }
@@ -206,6 +209,9 @@ const FormPersistence = (function () {
             excludeFilter: null
         }
         let config = Object.assign({}, defaults, options)
+        if(options.beforeDeserialize) {
+          data = options.beforeDeserialize(form, data)
+        }
         // apply given value functions first
         let speciallyHandled = []
         if (config.valueFunctions !== null) {
@@ -364,12 +370,4 @@ const FormPersistence = (function () {
     }
 })();
 
-/**
- * Export the module if applicable.
- */
-(function () {
-    // istanbul ignore else
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports = exports = FormPersistence
-    }
-})();
+export default FormPersistence
